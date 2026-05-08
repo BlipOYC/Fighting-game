@@ -1,6 +1,7 @@
 #Coordinates are top-left based
 #Inputs will be dicts in the {character: direction} format
 #Hopefully it works
+# new commit
 
 def create_hurtboxes():
     return [] #Implement later
