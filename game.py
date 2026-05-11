@@ -31,14 +31,12 @@ class Game:
 
     def update_positions(self, inputs):
         self.take_inputs(inputs)
+
         for character in self.characters:
             previous_bottom = character.y + character.height
 
             character.apply_gravity()
-            character.move(self.inputs[character])
-
-            character.x += character.vx
-            character.y += character.vy
+            character.move(self.inputs[character.name])
 
             character.grounded = False
 
@@ -48,5 +46,8 @@ class Game:
                         character.y = platform.y + character.height
                         character.vy = 0
                         character.grounded = True
+
+            character.x += character.vx
+            character.y += character.vy
 
         self.inputs = []

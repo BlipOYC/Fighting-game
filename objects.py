@@ -18,7 +18,8 @@ class Ground(Platform):
     pass
 
 class Character:
-    def __init__(self, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force):
+    def __init__(self, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force):
+        self.name = name
         self.colour = colour
         self.moveset = moveset
         self.x = x
@@ -50,7 +51,7 @@ class Character:
 
     def apply_gravity(self):
         if not self.grounded:
-            self.vy -= self.gravity
+            self.vy += self.gravity
         else:
             self.vy = 0
 

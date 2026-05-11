@@ -3,22 +3,35 @@ from game import Game
 from objects import Character, Platform, Ground
 
 character_list = {
-    "chara1": Character((255, 0, 0), (), 0, 0, 10, 30, 2, 3, 2, 5, 5, 2),
-    "chara2":Character((0, 0, 255), (), 0, 0, 10, 30, 2, 3, 2, 5, 5, 2),
+    "chara1": Character("1", (255, 0, 0), (), 30, 400, 10, 30, 2, 3, 2, 5, 5, 2),
+    "chara2":Character("2", (0, 0, 255), (), 570, 400, 10, 30, 2, 3, 2, 5, 5, 2),
 }
 
-platforms = [Platform(0, 0, 350, 10)]
+name_list = ["1", "2"]
 
+platforms = [Platform(10, 600, 350, 10, False)]
 
+keybinds = {
+    "1": {
+        pygame.K_w: "up",
+        pygame.K_s: "down",
+        pygame.K_a: "left",
+        pygame.K_d: "right"
+    },
+    "2": {
+        pygame.K_UP: "up",
+        pygame.K_DOWN: "down",
+        pygame.K_LEFT: "left",
+        pygame.K_RIGHT: "right",
+    }
+}
 
 #Functions
 def draw_player(player):
-    pygame.draw.rect(screen, player.color, [player.x, player.y, player.width, player.height])
-    screen.blit(player.image, player.rect)
+    pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width, player.height])
 
 def draw_platform(platform_to_draw):
     pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width, platform_to_draw.height])
-    screen.blit(platform_to_draw.image, platform_to_draw.rect)
 
 #Pygame stuff
 pygame.init()
@@ -42,7 +55,16 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    game.update_positions([key.unicode for key in pygame.key.get_pressed()])
+    all_keys = pygame.key.get_pressed()
+
+
+    pressed_keys = {
+        "1": [k for k in keybinds["1"] if all_keys[k]],
+        "2": [k for k in keybinds["2"] if all_keys[k]]
+    }
+
+
+    game.update_positions(pressed_keys)
 
     for platform in platforms:
         draw_platform(platform)
@@ -50,9 +72,13 @@ while running:
     for character in players:
         draw_player(character)
 
+    pygame.display.flip()
 
 
+    print(character_list["chara1"].x, character_list["chara1"].y)
+    print(character_list["chara2"].x, character_list["chara2"].y)
 
+    clock.tick(60)
 
 pygame.quit()
 sys.exit()
