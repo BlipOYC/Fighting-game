@@ -10,6 +10,7 @@ character_list = {
 name_list = ["1", "2"]
 
 platforms = [Platform(10, 600, 350, 10, False)]
+ground = Ground(10, 600, 700, 10, False)
 
 keybinds = {
     "1": {
