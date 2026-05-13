@@ -18,7 +18,7 @@ class Ground(Platform):
     pass
 
 class Character:
-    def __init__(self, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force):
+    def __init__(self, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
         self.name = name
         self.colour = colour
         self.moveset = moveset
@@ -40,14 +40,22 @@ class Character:
         self.grounded_max_move_speed = grounded_max_move_speed
         self.air_max_move_speed = air_max_move_speed
         self.jump_force = jump_force
+        self.max_air_jumps = max_air_jumps
+        self.air_jumps_used = 0
+        self.jump_delay = jump_delay #Measured in ticks
+        self.time_since_last_jump = float("inf") #Measured in ticks
 
     def update_moveset(self, updated_moveset):
         #Where applicable (Brawlhalla...)
         self.moveset = updated_moveset
 
     def jump(self):
-        self.vy -= self.jump_force
-        self.grounded = False
+        if self.air_jumps_used < self.max_air_jumps and self.time_since_last_jump >= self.jump_delay:
+            self.vy -= self.jump_force
+            self.grounded = False
+            self.air_jumps_used += 1
+            self.time_since_last_jump = 0
+
 
     def apply_gravity(self):
         if not self.grounded:
@@ -56,20 +64,32 @@ class Character:
             self.vy = 0
 
     def move(self, directions):
-        if directions:
-            accel_used = self.air_acceleration
-            max_speed = self.air_max_move_speed
-            if 'up' in directions:
-                self.jump()
-            if self.grounded:
-                accel_used = self.ground_acceleration
-                max_speed = self.grounded_max_move_speed
-            if 'left' in directions:
-                self.vx = -1 * min(abs(self.vx-accel_used), max_speed)
-            if 'right' in directions:
-                self.vx += min(abs(self.vx+accel_used), max_speed)
+        accel = self.air_acceleration
+        max_speed = self.air_max_move_speed
+
+        if self.grounded:
+            accel = self.ground_acceleration
+            max_speed = self.grounded_max_move_speed
+
+        if 'up' in directions:
+            self.jump()
+
+        # Target = Horizontal Direction
+        target = 0
+        if 'left' in directions:
+            target -= 1
+        if 'right' in directions:
+            target += 1
+
+        if target != 0:
+            self.vx += target * accel
         else:
-            pass
+            self.vx *= 0.8
+
+        if self.vx > max_speed:
+            self.vx = max_speed
+        if self.vx < -max_speed:
+            self.vx = -max_speed
 
 class Hitbox:
     def __init__(self, character, x, y, width, height, active_frames):

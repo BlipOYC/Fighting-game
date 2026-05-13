@@ -3,14 +3,14 @@ from game import Game
 from objects import Character, Platform, Ground
 
 character_list = {
-    "chara1": Character("1", (255, 0, 0), (), 30, 400, 10, 30, 2, 3, 2, 5, 5, 2),
-    "chara2":Character("2", (0, 0, 255), (), 570, 400, 10, 30, 2, 3, 2, 5, 5, 2),
+    "chara1": Character("1", (255, 0, 0), (), 30, 300, 10, 30, 2, 3, 2, 10, 5, 10, 2, 6),
+    "chara2":Character("2", (0, 0, 255), (), 570, 300, 10, 30, 0.5, 1, 3, 3, 10, 5, 3, 6),
 }
 
 name_list = ["1", "2"]
 
-platforms = [Platform(10, 600, 350, 10, False)]
-ground = Ground(10, 600, 700, 10, False)
+platforms = [Platform(10, 550, 780, 10, False)]
+ground = Ground(10, 400, 700, 10, False)
 
 keybinds = {
     "1": {
@@ -58,10 +58,9 @@ while running:
 
     all_keys = pygame.key.get_pressed()
 
-
     pressed_keys = {
-        "1": [k for k in keybinds["1"] if all_keys[k]],
-        "2": [k for k in keybinds["2"] if all_keys[k]]
+        "1": [keybinds["1"][k] for k in keybinds["1"] if all_keys[k]],
+        "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
     }
 
 
@@ -76,8 +75,8 @@ while running:
     pygame.display.flip()
 
 
-    print(character_list["chara1"].x, character_list["chara1"].y)
-    print(character_list["chara2"].x, character_list["chara2"].y)
+    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
+    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
 
     clock.tick(60)
 
