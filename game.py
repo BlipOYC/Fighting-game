@@ -36,23 +36,19 @@ class Game:
             character.apply_gravity()
             character.move(self.inputs[character.name])
 
-            # --- X move ---
             character.x += character.vx
 
-            # --- Y move ---
             character.y += character.vy
 
             character.grounded = False
 
             for platform in self.platforms:
-                # AABB overlap check
                 if (
                         character.x < platform.x + platform.width and
                         character.x + character.width > platform.x and
                         character.y < platform.y + platform.height and
                         character.y + character.height > platform.y
                 ):
-                    # only resolve landing from above
                     if character.vy > 0:
                         character.y = platform.y - character.height
                         character.vy = 0
@@ -61,7 +57,9 @@ class Game:
             if character.grounded:
                 character.air_jumps_used = 0
                 character.time_since_last_jump = float("inf")
+                character.time_on_ground += 1
             else:
                 character.time_since_last_jump += 1
+                character.time_on_ground = 0
 
         self.inputs = []

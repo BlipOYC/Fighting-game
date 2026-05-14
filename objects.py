@@ -25,6 +25,7 @@ class Character:
         self.x = x
         self.y = y
         self.grounded = False
+        self.percent = 0
 
         self.hurtboxes = create_hurtboxes()
 
@@ -44,6 +45,7 @@ class Character:
         self.air_jumps_used = 0
         self.jump_delay = jump_delay #Measured in ticks
         self.time_since_last_jump = float("inf") #Measured in ticks
+        self.time_on_ground = 0
 
     def update_moveset(self, updated_moveset):
         #Where applicable (Brawlhalla...)
@@ -73,6 +75,11 @@ class Character:
 
         if 'up' in directions:
             self.jump()
+        if 'down' in directions:
+            if self.time_on_ground >= 10:
+                self.vy += self.gravity
+                self.grounded = False
+                self.time_on_ground = 0
 
         # Target = Horizontal Direction
         target = 0
@@ -91,11 +98,17 @@ class Character:
         if self.vx < -max_speed:
             self.vx = -max_speed
 
+class Attack:
+    def __init__(self, associated_hitboxes):
+        self.associated_hitboxes = associated_hitboxes
+
+
 class Hitbox:
-    def __init__(self, character, x, y, width, height, active_frames):
+    def __init__(self, character, x, y, width, height, active_frames, damage):
         self.character = character
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.active_frames = active_frames
+        self.damage = damage
