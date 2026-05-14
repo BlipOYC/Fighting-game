@@ -1,6 +1,6 @@
 import pygame, sys
 from game import Game
-from game_objects_list import character_list, platforms, ground
+from game_objects_list import character_list, maps
 
 name_list = ["1", "2"]
 
@@ -19,6 +19,9 @@ keybinds = {
         pygame.K_RIGHT: "right",
     }
 }
+
+platforms = maps["map1"]["platforms"]
+ground = maps["map1"]["ground"]
 
 #Functions
 def draw_player(player):
@@ -68,8 +71,13 @@ while running:
     pygame.display.flip()
 
 
-    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
-    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
+#    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
+#    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
+    x = character_list["chara1"].air_jumps_used
+    y = character_list["chara2"].air_jumps_used
+    if x or y:
+        print(f"{x}, {y}")
+
 
     clock.tick(60)
 

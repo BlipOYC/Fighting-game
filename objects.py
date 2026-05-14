@@ -19,6 +19,7 @@ class Ground(Platform):
 
 class Character:
     def __init__(self, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
+        self.can_jump = True
         self.name = name
         self.colour = colour
         self.moveset = moveset
@@ -53,10 +54,15 @@ class Character:
 
     def jump(self):
         if self.air_jumps_used < self.max_air_jumps and self.time_since_last_jump >= self.jump_delay:
-            self.vy -= self.jump_force
+            self.vy = -self.jump_force
+
+            if not self.grounded:
+                self.air_jumps_used += 1
+
             self.grounded = False
-            self.air_jumps_used += 1
             self.time_since_last_jump = 0
+
+            self.can_jump = False
 
 
     def apply_gravity(self):
@@ -74,12 +80,18 @@ class Character:
             max_speed = self.grounded_max_move_speed
 
         if 'up' in directions:
-            self.jump()
+            if self.can_jump:
+                self.jump()
+        else:
+            self.can_jump = True
+
         if 'down' in directions:
             if self.time_on_ground >= 10:
                 self.vy += self.gravity
                 self.grounded = False
                 self.time_on_ground = 0
+            elif not self.grounded:
+                self.vy += self.air_acceleration
 
         # Target = Horizontal Direction
         target = 0
