@@ -1,8 +1,11 @@
-from objects import Character, Platform, Ground
+from objects import Character, Platform, Ground, Attack, Hitbox
+
+
+moves = {} #Implement l8r
 
 character_list = {
-    "chara1": Character("1", (255, 0, 0), (), 30, 300, 25, 100, 2, 3, 2, 10, 5, 20, 2, 20),
-    "chara2":Character("2", (0, 0, 255), (), 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 3, 20),
+    "chara1": Character("1", (255, 0, 0), (), 30, 300, 25, 100, 2, 5, 2, 20, 5, 20, 1, 10),
+    "chara2":Character("2", (0, 0, 255), (), 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
 }
 
 
@@ -11,8 +14,8 @@ maps = {
         {
             "platforms": [
                 Platform(10, 550, 780, 10, False),
-                Platform(50, 450, 250, 10, True),
-                Platform(500, 450, 250, 10, True),
+                Platform(50, 400, 250, 10, True),
+                Platform(500, 400, 250, 10, True),
             ],
             "ground": [
                 Ground(10, 400, 700, 10, False)

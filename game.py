@@ -62,4 +62,6 @@ class Game:
                 character.time_since_last_jump += 1
                 character.time_on_ground = 0
 
+            character.hurtboxes = character.create_hurtboxes()
+
         self.inputs = []

@@ -1,10 +1,7 @@
+import pygame
 #Coordinates are top-left based
 #Inputs will be dicts in the {character: direction} format
 #Hopefully it works
-# new commit
-
-def create_hurtboxes():
-    return [] #Implement later
 
 class Platform:
     def __init__(self, x, y, width, height, passable):
@@ -28,10 +25,10 @@ class Character:
         self.grounded = False
         self.percent = 0
 
-        self.hurtboxes = create_hurtboxes()
-
         self.width = width
         self.height = height
+
+        self.hurtboxes = self.create_hurtboxes()
 
         self.vx = 0
         self.vy = 0
@@ -110,17 +107,38 @@ class Character:
         if self.vx < -max_speed:
             self.vx = -max_speed
 
+    def create_hurtboxes(self):
+        return pygame.Rect([self.x, self.y, self.width, self.height])
+
+    def get_hit(self, attack):
+        pass
+
 class Attack:
-    def __init__(self, associated_hitboxes):
+    def __init__(self, associated_hitboxes, owner):
         self.associated_hitboxes = associated_hitboxes
+        self.owner = owner
+
+    def collide(self, characters, current_frame):
+        for character in characters:
+            if character == self.owner:
+                continue
+            else:
+                hitboxes = sorted([hitbox for hitbox in self.associated_hitboxes if current_frame in hitbox.active_frames], key=lambda hitbox: -hitbox.priority)
+                for hitbox in hitboxes:
+                    if hitbox.rect.colliderect(character.hurtboxes):
+                        character.get_hit(self)
+                        break #Do not stack hitboxes
 
 
 class Hitbox:
-    def __init__(self, character, x, y, width, height, active_frames, damage):
+    def __init__(self, character, x, y, width, height, active_frames, damage, direction, priority=0):
         self.character = character
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.active_frames = active_frames
+        self.rect = pygame.Rect([self.x, self.y, self.width, self.height])
+        self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 and 9, and appears as (8, 9)
         self.damage = damage
+        self.direction = direction
+        self.priority = priority
