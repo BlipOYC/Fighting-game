@@ -108,6 +108,9 @@ class Character:
         if self.vx < -max_speed:
             self.vx = -max_speed
 
+    def attack(self, inputs):
+        pass
+
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])
 
@@ -139,7 +142,7 @@ class Hitbox:
         self.width = width
         self.height = height
         self.rect = pygame.Rect([self.x, self.y, self.width, self.height])
-        self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 and 9, and appears as (8, 9)
+        self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 to 9, and appears as (8, 9)
         self.damage = damage
         self.direction = direction
         self.priority = priority
