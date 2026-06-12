@@ -1,11 +1,45 @@
 from objects import Character, Platform, Ground, Attack, Hitbox
 
 
-moves = {} #Implement l8r
+moves = {
+    "Rushdown": {
+        "nLight": None,
+        "fLight": None,
+        "dLight": None,
+        "grab": None,
+        "throw": None,
+        "nAir": None,
+        "fAir": None,
+        "uAir": None,
+        "dAir": None,
+    },
+    "Brawler": {
+        "nLight": None,
+        "fLight": None,
+        "dLight": None,
+        "grab": None,
+        "throw": None,
+        "nAir": None,
+        "fAir": None,
+        "uAir": None,
+        "dAir": None,
+    },
+    "Zoner": {
+        "nLight": None,
+        "fLight": None,
+        "dLight": None,
+        "grab": None,
+        "throw": None,
+        "nAir": None,
+        "fAir": None,
+        "uAir": None,
+        "dAir": None,
+    },
+} #Implement l8r
 
 character_list = {
-    "chara1": Character("1", (255, 0, 0), (), 30, 300, 25, 100, 2, 5, 2, 20, 5, 20, 1, 10),
-    "chara2":Character("2", (0, 0, 255), (), 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
+    "chara1": Character("Brawler", "1", (255, 0, 0), moves["Brawler"], 30, 300, 25, 100, 2, 5, 2, 20, 5, 20, 1, 10),
+    "chara2":Character("Brawler", "2", (0, 0, 255), moves["Brawler"], 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
 }
 
 

@@ -15,8 +15,8 @@ class Ground(Platform):
     pass
 
 class Character:
-    def __init__(self, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
-        self.can_jump = True
+    def __init__(self, archetype, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
+        self.archetype = archetype
         self.name = name
         self.colour = colour
         self.moveset = moveset
@@ -44,6 +44,7 @@ class Character:
         self.jump_delay = jump_delay #Measured in ticks
         self.time_since_last_jump = float("inf") #Measured in ticks
         self.time_on_ground = 0
+        self.can_jump = True
 
     def update_moveset(self, updated_moveset):
         #Where applicable (Brawlhalla...)

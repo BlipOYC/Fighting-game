@@ -10,13 +10,15 @@ keybinds = {
         pygame.K_w: "up",
         pygame.K_s: "down",
         pygame.K_a: "left",
-        pygame.K_d: "right"
+        pygame.K_d: "right",
+        pygame.K_f: "attack",
     },
     "2": {
         pygame.K_UP: "up",
         pygame.K_DOWN: "down",
         pygame.K_LEFT: "left",
         pygame.K_RIGHT: "right",
+        pygame.K_SEMICOLON: "attack",
     }
 }
 
