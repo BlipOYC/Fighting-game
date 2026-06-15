@@ -1,4 +1,4 @@
-import pygame
+import pygame, math
 #Coordinates are top-left based
 #Inputs will be dicts in the {character: direction} format
 #Hopefully it works
@@ -28,6 +28,8 @@ class Character:
         self.width = width
         self.height = height
 
+        self.facing = "right"
+
         self.hurtboxes = self.create_hurtboxes()
 
         self.vx = 0
@@ -45,6 +47,14 @@ class Character:
         self.time_since_last_jump = float("inf") #Measured in ticks
         self.time_on_ground = 0
         self.can_jump = True
+
+    def change_facing(self):
+        if self.vx < 0:
+            self.facing = "left"
+        elif self.vx > 0:
+            self.facing = "right"
+        else:
+            pass
 
     def update_moveset(self, updated_moveset):
         #Where applicable (Brawlhalla...)
@@ -109,12 +119,29 @@ class Character:
             self.vx = -max_speed
 
     def attack(self, inputs):
-        pass
+        if "attack" in inputs:
+            if self.grounded:
+                if "down" in inputs:
+                    return self.moveset["dLight"]
+                elif self.facing in inputs:
+                    return self.moveset["fLight"]
+                else:
+                    return self.moveset["nLight"]
+            else:
+                if "down" in inputs:
+                    return self.moveset["dAir"]
+                elif self.facing in inputs:
+                    return self.moveset["fAir"]
+                elif "up" in inputs:
+                    return self.moveset["uAir"]
+                else:
+                    return self.moveset["nLight"]
+        return None
 
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])
 
-    def get_hit(self, attack):
+    def get_hit(self, hitbox):
         pass
 
 class Attack:
@@ -131,11 +158,14 @@ class Attack:
                 for hitbox in hitboxes:
                     if hitbox.rect.colliderect(character.hurtboxes):
                         character.get_hit(self)
-                        break #Do not stack hitboxes
+                        return hitbox #So we can apply knockback
+                    return None
+                return None
+        return None
 
 
 class Hitbox:
-    def __init__(self, character, x, y, width, height, active_frames, damage, direction, priority=0):
+    def __init__(self, character, x, y, width, height, active_frames, damage, force, direction, priority=0):
         self.character = character
         self.x = x
         self.y = y
@@ -144,5 +174,6 @@ class Hitbox:
         self.rect = pygame.Rect([self.x, self.y, self.width, self.height])
         self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 to 9, and appears as (8, 9)
         self.damage = damage
-        self.direction = direction
+        self.force = force
+        self.direction = direction #degrees
         self.priority = priority

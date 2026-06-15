@@ -61,6 +61,9 @@ while running:
         "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
     }
 
+    if pressed_keys["1"] or pressed_keys["2"]:
+        print(pressed_keys)
+
 
     game.update_positions(pressed_keys)
 
@@ -75,10 +78,6 @@ while running:
 
 #    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
 #    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
-    x = character_list["chara1"].air_jumps_used
-    y = character_list["chara2"].air_jumps_used
-    if x or y:
-        print(f"{x}, {y}")
 
 
     clock.tick(60)

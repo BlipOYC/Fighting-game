@@ -49,7 +49,7 @@ class Game:
                         character.x < platform.x + platform.width and
                         character.x + character.width > platform.x and
                         character.y < platform.y + platform.height and
-                        character.y + character.height >= platform.y > prev_y
+                        prev_y + character.height <= platform.y <= character.y + character.height
                 ):
                     if character.vy > 0:
                         character.y = platform.y - character.height
