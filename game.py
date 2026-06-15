@@ -35,6 +35,8 @@ class Game:
         for character in self.characters:
             character.apply_gravity()
             character.move(self.inputs[character.name])
+            prev_x = character.x
+            prev_y = character.y
 
             character.x += character.vx
 
@@ -47,7 +49,7 @@ class Game:
                         character.x < platform.x + platform.width and
                         character.x + character.width > platform.x and
                         character.y < platform.y + platform.height and
-                        character.y + character.height > platform.y
+                        character.y + character.height >= platform.y > prev_y
                 ):
                     if character.vy > 0:
                         character.y = platform.y - character.height
