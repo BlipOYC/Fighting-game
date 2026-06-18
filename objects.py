@@ -2,6 +2,11 @@ import pygame, math
 #Coordinates are top-left based
 #Inputs will be dicts in the {character: direction} format
 #Hopefully it works
+def sine(n: float | int) -> float:
+    return math.sin(math.radians(n))
+
+def cosine(n):
+    return math.cos(math.radians(n))
 
 class Platform:
     def __init__(self, x, y, width, height, passable):
@@ -138,23 +143,39 @@ class Character:
                     return self.moveset["nLight"]
         return None
 
+    def execute(self, character_changes):
+        pass
+
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])
 
-    def get_hit(self, hitbox):
-        pass
+    def get_hit(self, hitbox): # Add SDI later
+        self.percent += hitbox.damage
+        #Damage formulas to be WIP based on testing
+        if hitbox.fixed_force:
+            self.vx = hitbox.force * cosine(hitbox.direction)
+            self.vy = hitbox.y * sine(hitbox.direction)
+        else:
+            self.vx = hitbox.force * cosine(hitbox.direction) * self.percent/10
+            self.vy = hitbox.y * sine(hitbox.direction) * self.percent/10
 
 class Attack:
     def __init__(self, associated_hitboxes, owner):
         self.associated_hitboxes = associated_hitboxes
+        self.active_ticks = 0
+        self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
         self.owner = owner
 
-    def collide(self, characters, current_frame):
+    def update(self):
+        self.active_ticks += 1
+        self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
+
+    def collide(self, characters):
         for character in characters:
             if character == self.owner:
                 continue
             else:
-                hitboxes = sorted([hitbox for hitbox in self.associated_hitboxes if current_frame in hitbox.active_frames], key=lambda hitbox: -hitbox.priority)
+                hitboxes = sorted(self.current_hitboxes, key=lambda hb: -hb.priority)
                 for hitbox in hitboxes:
                     if hitbox.rect.colliderect(character.hurtboxes):
                         character.get_hit(self)
@@ -165,7 +186,7 @@ class Attack:
 
 
 class Hitbox:
-    def __init__(self, character, x, y, width, height, active_frames, damage, force, direction, priority=0):
+    def __init__(self, character, x, y, width, height, active_frames, damage, force, direction, facing, priority=0, fixed_force=False):
         self.character = character
         self.x = x
         self.y = y
@@ -176,4 +197,6 @@ class Hitbox:
         self.damage = damage
         self.force = force
         self.direction = direction #degrees
+        self.facing = facing
         self.priority = priority
+        self.fixed_force = fixed_force

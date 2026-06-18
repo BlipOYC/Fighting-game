@@ -29,6 +29,14 @@ class Game:
     def take_inputs(self, inputs):
         self.inputs = inputs
 
+    def execute_move(self, character, inputs):
+        character_change, true_attack = character.attack(inputs)
+        #character_change = what happens to the character themselves after a move is inputted
+        #including change in hurtboxes, animation
+        #true_attack = actual Attack object of attack
+        character.execute(character_change)
+
+
     def update_positions(self, inputs):
         self.take_inputs(inputs)
 
