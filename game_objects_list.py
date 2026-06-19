@@ -1,6 +1,11 @@
 from objects import Character, Platform, Ground, Attack, Hitbox
-import move_list
+import make_move_list
 
+def convert_to_attack(*params):
+    try:
+        return Attack(*params)
+    except AttributeError:
+        raise Exception("PARAMETERS MISSING")
 
 moves = {
     "Rushdown": {

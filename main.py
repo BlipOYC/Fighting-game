@@ -43,12 +43,16 @@ pygame.display.set_caption('Platform Fighter Prototype')
 clock = pygame.time.Clock()
 delta_time = 0.1
 running = True
+state = None
 
 #Player stuff
 players = [character_list["chara1"], character_list["chara2"]]
 
 #Game thingy
 game = Game(platforms, players)
+
+#Camera stuffs
+camera_mode = "Fixed"
 
 while running:
     screen.fill((255,255,255))
@@ -67,13 +71,17 @@ while running:
         print(pressed_keys)
 
 
-    game.update_positions(pressed_keys)
+    state = game.update_positions(pressed_keys)
+    if state is None:
 
-    for platform in platforms:
-        draw_platform(platform)
+        for platform in platforms:
+            draw_platform(platform)
 
-    for character in players:
-        draw_player(character)
+        for character in players:
+            draw_player(character)
+
+    else:
+        running = False
 
     pygame.display.flip()
 
@@ -83,6 +91,8 @@ while running:
 
 
     clock.tick(60)
+
+print(state.name + " has won!")
 
 pygame.quit()
 sys.exit()

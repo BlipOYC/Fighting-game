@@ -40,6 +40,14 @@ class Game:
     def update_positions(self, inputs):
         self.take_inputs(inputs)
 
+        p1, p2 = self.characters[0], self.characters[1]
+        if p1.is_alive() and not p2.is_alive():
+            return p1
+        elif not p1.is_alive() and p2.is_alive():
+            return p2
+        elif not p1.is_alive() and not p2.is_alive():
+            return "Tie"
+
         for character in self.characters:
             character.apply_gravity()
             character.move(self.inputs[character.name])
@@ -75,3 +83,4 @@ class Game:
             character.hurtboxes = character.create_hurtboxes()
 
         self.inputs = []
+        return None

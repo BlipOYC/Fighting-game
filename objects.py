@@ -29,6 +29,7 @@ class Character:
         self.y = y
         self.grounded = False
         self.percent = 0
+        self.lives = 3 #Default
 
         self.width = width
         self.height = height
@@ -158,6 +159,9 @@ class Character:
         else:
             self.vx = hitbox.force * cosine(hitbox.direction) * self.percent/10
             self.vy = hitbox.y * sine(hitbox.direction) * self.percent/10
+
+    def is_alive(self):
+        return self.lives > 0
 
 class Attack:
     def __init__(self, associated_hitboxes, owner):
