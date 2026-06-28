@@ -49,6 +49,8 @@ class Game:
             return "Tie"
 
         for character in self.characters:
+            #Add dash logic
+            #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
             character.apply_gravity()
             character.move(self.inputs[character.name])
             prev_x = character.x

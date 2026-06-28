@@ -11,16 +11,18 @@ keybinds = {
         pygame.K_s: "down",
         pygame.K_a: "left",
         pygame.K_d: "right",
+        pygame.K_q: "dash",
         pygame.K_g: "attack",
-        pygame.K_h: "sig",
+        pygame.K_h: "heavy",
     },
     "2": {
         pygame.K_UP: "up",
         pygame.K_DOWN: "down",
         pygame.K_LEFT: "left",
         pygame.K_RIGHT: "right",
+        pygame.K_SLASH: "dash",
         pygame.K_SEMICOLON: "attack",
-        pygame.K_QUOTE: "sig"
+        pygame.K_QUOTE: "heavy"
     }
 }
 

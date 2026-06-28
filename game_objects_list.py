@@ -1,5 +1,10 @@
-from objects import Character, Platform, Ground, Attack, Hitbox
-import make_move_list
+from objects import Archetype, Character, Platform, Ground, Attack, Hitbox
+import get_move_list
+move_list = []
+for file in ["brawlers_moves.json", "rushdown_moves.json", "zoners_moves.json"]:
+    #MUST UN-JSON LATER
+    opened_file = open(file, "r")
+    move_list.append(opened_file.read())
 
 def convert_to_attack(*params):
     try:
@@ -43,9 +48,18 @@ moves = {
     },
 } #Implement l8r
 
+rushdown = Archetype("Rushdown", moves["Rushdown"], 40)
+brawler = Archetype("Brawler", moves["Brawler"], 30)
+zoner = Archetype("Zoner", moves["Zoner"], 25)
+
+chara1_sigs = {}
+chara2_sigs = {}
+
 character_list = {
-    "chara1": Character("Brawler", "1", (255, 0, 0), moves["Brawler"], 30, 300, 25, 100, 2, 5, 2, 20, 5, 30, 1, 10),
-    "chara2":Character("Brawler", "2", (0, 0, 255), moves["Brawler"], 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
+    "chara1": Character(
+        brawler, "1", (255, 0, 0), chara1_sigs, 30, 300, 25, 100, 2, 5, 2, 20, 5, 30, 1, 10),
+    "chara2":Character(
+        brawler, "2", (0, 0, 255), chara2_sigs, 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
 }
 
 

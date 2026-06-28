@@ -19,12 +19,18 @@ class Platform:
 class Ground(Platform):
     pass
 
+class Archetype:
+    def __init__(self, name, moveset, dash_spd):
+        self.name = name
+        self.moveset = moveset
+        self.dash_spd = dash_spd
+
 class Character:
-    def __init__(self, archetype, name, colour, moveset, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
+    def __init__(self, archetype, name, colour, heavies, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
         self.archetype = archetype
         self.name = name
         self.colour = colour
-        self.moveset = moveset
+        self.moveset = self.archetype.moveset | heavies #Non-overlapping dictionaries
         self.x = x
         self.y = y
         self.grounded = False
@@ -142,6 +148,17 @@ class Character:
                     return self.moveset["uAir"]
                 else:
                     return self.moveset["nLight"]
+        elif "heavy" in inputs:
+            if self.grounded:
+                pass
+                #We have no heavies yet
+            else:
+                if "up" in inputs:
+                    pass
+                    #Add a recovery move
+                elif "down" in inputs:
+                    pass
+                    #Add a ground pound
         return None
 
     def execute(self, character_changes):
