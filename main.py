@@ -1,6 +1,7 @@
 import pygame, sys
 from game import Game
 from game_objects_list import character_list, maps
+#Check out SPINE (engine)
 
 name_list = ["1", "2"]
 

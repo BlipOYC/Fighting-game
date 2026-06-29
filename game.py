@@ -77,6 +77,7 @@ class Game:
             if character.grounded:
                 character.air_jumps_used = 0
                 character.time_since_last_jump = float("inf")
+                character.time_since_last_dash = float("inf")
                 character.time_on_ground += 1
             else:
                 character.time_since_last_jump += 1

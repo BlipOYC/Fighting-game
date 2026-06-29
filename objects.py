@@ -57,8 +57,10 @@ class Character:
         self.air_jumps_used = 0
         self.jump_delay = jump_delay #Measured in ticks
         self.time_since_last_jump = float("inf") #Measured in ticks
+        self.time_since_last_dash = float("inf") #Also measured in ticks
         self.time_on_ground = 0
         self.can_jump = True
+        self.can_dash = True
 
     def change_facing(self):
         if self.vx < 0:
@@ -83,6 +85,11 @@ class Character:
             self.time_since_last_jump = 0
 
             self.can_jump = False
+
+    def dash(self, direction):
+        if self.grounded:
+            if direction == "left":
+                self.vx -= self.archetype.dash_spd
 
 
     def apply_gravity(self):
