@@ -48,18 +48,18 @@ moves = {
     },
 } #Implement l8r
 
-rushdown = Archetype("Rushdown", moves["Rushdown"], 40)
-brawler = Archetype("Brawler", moves["Brawler"], 30)
-zoner = Archetype("Zoner", moves["Zoner"], 25)
+rushdown = Archetype("Rushdown", moves["Rushdown"], 40, 3)
+brawler = Archetype("Brawler", moves["Brawler"], 30, 3)
+zoner = Archetype("Zoner", moves["Zoner"], 25, 5)
 
 chara1_sigs = {}
 chara2_sigs = {}
 
 character_list = {
     "chara1": Character(
-        brawler, "1", (255, 0, 0), chara1_sigs, 30, 300, 25, 100, 2, 5, 2, 20, 5, 30, 1, 10),
+        brawler, "1", (255, 0, 0), chara1_sigs, 30, 300, 25, 100, 2, 5, 2, 20, 5, 30, 1, 10, 12),
     "chara2":Character(
-        brawler, "2", (0, 0, 255), chara2_sigs, 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20),
+        brawler, "2", (0, 0, 255), chara2_sigs, 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20, 12),
 }
 
 

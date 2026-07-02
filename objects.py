@@ -20,13 +20,14 @@ class Ground(Platform):
     pass
 
 class Archetype:
-    def __init__(self, name, moveset, dash_spd):
+    def __init__(self, name, moveset, dash_spd, intangibility_frames):
         self.name = name
         self.moveset = moveset
         self.dash_spd = dash_spd
+        self.intangibility_frames = intangibility_frames
 
 class Character:
-    def __init__(self, archetype, name, colour, heavies, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay):
+    def __init__(self, archetype, name, colour, heavies, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay, dash_delay):
         self.archetype = archetype
         self.name = name
         self.colour = colour
@@ -36,6 +37,7 @@ class Character:
         self.grounded = False
         self.percent = 0
         self.lives = 3 #Default
+        self.intangible = False
 
         self.width = width
         self.height = height
@@ -56,6 +58,7 @@ class Character:
         self.max_air_jumps = max_air_jumps
         self.air_jumps_used = 0
         self.jump_delay = jump_delay #Measured in ticks
+        self.dash_delay = dash_delay
         self.time_since_last_jump = float("inf") #Measured in ticks
         self.time_since_last_dash = float("inf") #Also measured in ticks
         self.time_on_ground = 0
@@ -87,10 +90,29 @@ class Character:
             self.can_jump = False
 
     def dash(self, direction):
-        if self.grounded:
-            if direction == "left":
-                self.vx -= self.archetype.dash_spd
-
+        if self.time_since_last_dash >= self.dash_delay:
+            if self.grounded:
+                if direction == "left" and self.facing == "left":
+                    self.vx -= self.archetype.dash_spd
+                elif direction == "right":
+                    self.vx += self.archetype.dash_spd
+                if direction == "left":
+                    self.vx -= self.archetype.dash_spd
+                elif direction in ["up", "down"] or direction is None:
+                    self.intangible = True
+            else:
+                if direction == "left":
+                    self.vx -= self.archetype.dash_spd
+                if direction == "right":
+                    self.vx += self.archetype.dash_spd
+                elif direction == "up":
+                    self.vy -= self.archetype.dash_spd
+                elif direction == "down":
+                    self.vy += self.archetype.dash_spd
+                self.intangible = True
+                #For 3 frames and only for air dashes
+        self.time_since_last_dash = 0
+        self.can_dash = False
 
     def apply_gravity(self):
         if not self.grounded:
@@ -220,7 +242,7 @@ class Hitbox:
         self.y = y
         self.width = width
         self.height = height
-        self.rect = pygame.Rect([self.x, self.y, self.width, self.height])
+        self.rect = pygame.Rect([self.x + character.x, self.y + character.y, self.width, self.height])
         self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 to 9, and appears as (8, 9)
         self.damage = damage
         self.force = force
