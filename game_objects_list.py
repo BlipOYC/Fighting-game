@@ -48,9 +48,9 @@ moves = {
     },
 } #Implement l8r
 
-rushdown = Archetype("Rushdown", moves["Rushdown"], 40, 3)
-brawler = Archetype("Brawler", moves["Brawler"], 30, 3)
-zoner = Archetype("Zoner", moves["Zoner"], 25, 5)
+rushdown = Archetype("Rushdown", moves["Rushdown"], 40,3,  3)
+brawler = Archetype("Brawler", moves["Brawler"], 30, 3, 3)
+zoner = Archetype("Zoner", moves["Zoner"], 25, 5, 5)
 
 chara1_sigs = {}
 chara2_sigs = {}

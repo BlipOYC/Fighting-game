@@ -20,10 +20,11 @@ class Ground(Platform):
     pass
 
 class Archetype:
-    def __init__(self, name, moveset, dash_spd, intangibility_frames):
+    def __init__(self, name, moveset, dash_spd, dash_frames, intangibility_frames):
         self.name = name
         self.moveset = moveset
         self.dash_spd = dash_spd
+        self.dash_frames = dash_frames
         self.intangibility_frames = intangibility_frames
 
 class Character:
@@ -89,26 +90,30 @@ class Character:
 
             self.can_jump = False
 
-    def dash(self, direction):
+    def dash(self, directions):
         if self.time_since_last_dash >= self.dash_delay:
             if self.grounded:
-                if direction == "left" and self.facing == "left":
+                if "left" in directions and self.facing == "left":
                     self.vx -= self.archetype.dash_spd
-                elif direction == "right":
+                elif "right" in directions:
                     self.vx += self.archetype.dash_spd
-                if direction == "left":
+                if "left" in directions:
                     self.vx -= self.archetype.dash_spd
-                elif direction in ["up", "down"] or direction is None:
+                else:
                     self.intangible = True
             else:
-                if direction == "left":
+                if "left" in directions and self.facing == "left":
                     self.vx -= self.archetype.dash_spd
-                if direction == "right":
+                elif "right" in directions:
                     self.vx += self.archetype.dash_spd
-                elif direction == "up":
+                if "left" in directions:
+                    self.vx -= self.archetype.dash_spd
+                elif "up" in directions:
                     self.vy -= self.archetype.dash_spd
-                elif direction == "down":
+                elif "down" in directions:
                     self.vy += self.archetype.dash_spd
+                else:
+                    self.vx = self.vy = 0
                 self.intangible = True
                 #For 3 frames and only for air dashes
         self.time_since_last_dash = 0

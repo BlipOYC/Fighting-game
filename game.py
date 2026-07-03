@@ -54,10 +54,10 @@ class Game:
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
             character.apply_gravity()
-            if "dash" in self.inputs[character.name]:
-                character.dash(inputs)
+            if "dash" in self.inputs[character.name] and character.time_since_last_dash > character.dash_delay:
+                character.dash(self.inputs[character.name])
 
-            else:
+            elif not (character.time_since_last_dash <= character.archetype.dash_frames):
                 character.move(self.inputs[character.name])
 
             prev_x = character.x
