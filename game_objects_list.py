@@ -54,12 +54,15 @@ zoner = Archetype("Zoner", moves["Zoner"], 25, 5, 5)
 
 chara1_sigs = {}
 chara2_sigs = {}
+chara3_sigs = {}
 
 character_list = {
     "chara1": Character(
         brawler, "1", (255, 0, 0), chara1_sigs, 30, 300, 25, 100, 2, 5, 2, 20, 5, 30, 1, 10, 12),
     "chara2":Character(
         brawler, "2", (0, 0, 255), chara2_sigs, 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20, 12),
+    "chara3":Character(
+        zoner, "3", (0, 255, 0), chara3_sigs,  300, 300, 25, 100, 1, 2, 2, 2, 5, 15, 1, 10, 15),
 }
 
 

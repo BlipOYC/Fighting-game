@@ -1,10 +1,11 @@
 import pygame, sys
 from game import Game
 from game_objects_list import character_list, maps
+from menu_script import run_menu
 #Check out SPINE (engine)
 
 name_list = ["1", "2"]
-
+state = "menu"
 
 keybinds = {
     "1": {
@@ -13,8 +14,8 @@ keybinds = {
         pygame.K_a: "left",
         pygame.K_d: "right",
         pygame.K_q: "dash",
-        pygame.K_g: "attack",
-        pygame.K_h: "heavy",
+        pygame.K_f: "attack",
+        pygame.K_g: "heavy",
     },
     "2": {
         pygame.K_UP: "up",
@@ -47,53 +48,69 @@ clock = pygame.time.Clock()
 delta_time = 0.1
 running = True
 state = None
+sstate = "menu"
 
-#Player stuff
-players = [character_list["chara1"], character_list["chara2"]]
-
-#Game thingy
-game = Game(platforms, players)
 
 #Camera stuffs
 camera_mode = "Fixed"
 
 while running:
-    screen.fill((255,255,255))
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
+    if sstate == "menu":
+        players = run_menu(screen, clock)
+
+        print("MENU RETURNED:", players)
+
+        if players is None:
+            running = False
+            continue
+
+        print("P1:", players[0], players[0].name)
+        print("P2:", players[1], players[1].name)
+
+        game = Game(platforms, players)
+
+        print("GAME CREATED")
+
+        sstate = "game"
+
+    elif sstate == "game":
+
+        screen.fill((255,255,255))
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+        all_keys = pygame.key.get_pressed()
+
+        pressed_keys = {
+            "1": [keybinds["1"][k] for k in keybinds["1"] if all_keys[k]],
+            "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
+        }
+
+        if pressed_keys["1"] or pressed_keys["2"]:
+            print(pressed_keys)
+
+
+        state = game.update_positions(pressed_keys)
+        if state is None:
+
+            for platform in platforms:
+                draw_platform(platform)
+
+            for character in players:
+                draw_player(character)
+
+        else:
             running = False
 
-    all_keys = pygame.key.get_pressed()
-
-    pressed_keys = {
-        "1": [keybinds["1"][k] for k in keybinds["1"] if all_keys[k]],
-        "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
-    }
-
-    if pressed_keys["1"] or pressed_keys["2"]:
-        print(pressed_keys)
+        pygame.display.flip()
 
 
-    state = game.update_positions(pressed_keys)
-    if state is None:
-
-        for platform in platforms:
-            draw_platform(platform)
-
-        for character in players:
-            draw_player(character)
-
-    else:
-        running = False
-
-    pygame.display.flip()
+    #    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
+    #    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
 
 
-#    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
-#    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
-
-
-    clock.tick(60)
+        clock.tick(60)
 
 print(state.name + " has won!")
 
