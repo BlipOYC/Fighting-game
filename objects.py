@@ -20,11 +20,11 @@ class Ground(Platform):
     pass
 
 class Archetype:
-    def __init__(self, name, moveset, dash_spd, dash_frames, intangibility_frames):
+    def __init__(self, name, moveset, dash_spd, dash_duration, intangibility_frames):
         self.name = name
         self.moveset = moveset
         self.dash_spd = dash_spd
-        self.dash_frames = dash_frames
+        self.dash_duration = dash_duration
         self.intangibility_frames = intangibility_frames
 
 class Character:
@@ -59,12 +59,14 @@ class Character:
         self.max_air_jumps = max_air_jumps
         self.air_jumps_used = 0
         self.jump_delay = jump_delay #Measured in ticks
-        self.dash_delay = dash_delay
+        self.dash_delay = self.base_dash_delay = dash_delay
         self.time_since_last_jump = float("inf") #Measured in ticks
         self.time_since_last_dash = float("inf") #Also measured in ticks
         self.time_on_ground = 0
         self.can_jump = True
-        self.can_dash = True
+
+        self.is_dashing = False
+
 
     def change_facing(self):
         if self.vx < 0:
@@ -91,13 +93,21 @@ class Character:
             self.can_jump = False
 
     def dash(self, directions):
+        if self.time_since_last_dash < self.dash_delay:
+            return
+
+        self.is_dashing = True
+        self.dash_timer = self.archetype.dash_duration
+        self.time_since_last_dash = 0
+        self.intangible = True
+
         if self.time_since_last_dash >= self.dash_delay:
             if self.grounded:
                 if "left" in directions and self.facing == "left":
                     self.vx -= self.archetype.dash_spd
-                elif "right" in directions:
+                elif "right" in directions and self.facing != "left":
                     self.vx += self.archetype.dash_spd
-                if "left" in directions:
+                elif "left" in directions:
                     self.vx -= self.archetype.dash_spd
                 else:
                     self.intangible = True
@@ -106,7 +116,7 @@ class Character:
                     self.vx -= self.archetype.dash_spd
                 elif "right" in directions:
                     self.vx += self.archetype.dash_spd
-                if "left" in directions:
+                elif "left" in directions  and self.facing != "left":
                     self.vx -= self.archetype.dash_spd
                 elif "up" in directions:
                     self.vy -= self.archetype.dash_spd
@@ -115,9 +125,10 @@ class Character:
                 else:
                     self.vx = self.vy = 0
                 self.intangible = True
+
+            self.time_since_last_dash = 0
+            self.dash_delay *= 1.5
                 #For 3 frames and only for air dashes
-        self.time_since_last_dash = 0
-        self.can_dash = False
 
     def apply_gravity(self):
         if not self.grounded:
@@ -164,6 +175,8 @@ class Character:
         if self.vx < -max_speed:
             self.vx = -max_speed
 
+        self.change_facing()
+
     def attack(self, inputs):
         if "attack" in inputs:
             if self.grounded:
@@ -204,12 +217,10 @@ class Character:
     def get_hit(self, hitbox): # Add SDI later
         self.percent += hitbox.damage
         #Damage formulas to be WIP based on testing
-        if hitbox.fixed_force:
-            self.vx = hitbox.force * cosine(hitbox.direction)
-            self.vy = hitbox.y * sine(hitbox.direction)
-        else:
-            self.vx = hitbox.force * cosine(hitbox.direction) * self.percent/10
-            self.vy = hitbox.y * sine(hitbox.direction) * self.percent/10
+        multiplier = 1 if hitbox.fixed_force else self.percent / 10
+
+        self.vx = hitbox.force * cosine(hitbox.direction) * multiplier
+        self.vy = hitbox.force * sine(hitbox.direction) * multiplier
 
     def is_alive(self):
         return self.lives > 0
@@ -229,13 +240,15 @@ class Attack:
         for character in characters:
             if character == self.owner:
                 continue
+            if character.intangible:
+                continue
+
             else:
                 hitboxes = sorted(self.current_hitboxes, key=lambda hb: -hb.priority)
                 for hitbox in hitboxes:
                     if hitbox.rect.colliderect(character.hurtboxes):
                         character.get_hit(self)
                         return hitbox #So we can apply knockback
-                    return None
                 return None
         return None
 

@@ -199,6 +199,22 @@ def run_menu(screen, clock):
         pygame.display.flip()
         clock.tick(60)
 
+def run_pause(screen):
+    overlay = pygame.Surface((800, 600))
+    overlay.set_alpha(150)  # Affects transparency from 0-255
+    overlay.fill((0, 0, 0))
+    screen.blit(overlay, (0, 0))
+
+    paused_font = pygame.font.Font(None, 72)
+    text = paused_font.render("PAUSED", True, (255, 255, 255))
+    text_rect = text.get_rect(topleft=(20, 20))
+    screen.blit(text, text_rect)
+
+    font_small = pygame.font.Font(None, 36)
+    text = font_small.render("Press ESC to resume", True, (255, 255, 255))
+    text_rect = text.get_rect(topleft=(20, 100))
+    screen.blit(text, text_rect)
+
 if __name__ == "__main__":
     pygame.init()
     screen = pygame.display.set_mode((800, 600))

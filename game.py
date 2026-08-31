@@ -53,18 +53,25 @@ class Game:
         for character in self.characters:
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
-            character.apply_gravity()
-            if "dash" in self.inputs[character.name] and character.time_since_last_dash > character.dash_delay:
-                character.dash(self.inputs[character.name])
 
-            elif not (character.time_since_last_dash <= character.archetype.dash_frames):
-                character.move(self.inputs[character.name])
+            #dash logic implemented
+            if character.is_dashing:
+                character.dash_timer -= 1
+
+                if character.dash_timer <= 0:
+                    character.is_dashing = False
+                    character.intangible = False
+            else:
+                if "dash" in self.inputs[character.name]:
+                    character.dash(self.inputs[character.name])
+                else:
+                    character.apply_gravity() #Moved here so gravity does not affect dashing speeds
+                    character.move(self.inputs[character.name])
 
             prev_x = character.x
             prev_y = character.y
 
             character.x += character.vx
-
             character.y += character.vy
 
             character.grounded = False
@@ -85,14 +92,14 @@ class Game:
                 character.air_jumps_used = 0
                 character.time_since_last_jump = float("inf")
                 character.time_on_ground += 1
+                character.dash_delay = character.base_dash_delay
             else:
                 character.time_since_last_jump += 1
                 character.time_on_ground = 0
 
             character.hurtboxes = character.create_hurtboxes()
             character.time_since_last_dash += 1
-            if character.time_since_last_dash > character.archetype.intangibility_frames:
-                character.intangible = False
+
 
         for character in self.characters:
             execute_move(character, inputs)

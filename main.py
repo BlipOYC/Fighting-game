@@ -1,10 +1,10 @@
 import pygame, sys
 from game import Game
 from game_objects_list import character_list, maps
-from menu_script import run_menu
+from menu_script import run_menu, run_pause
 #Check out SPINE (engine)
 
-name_list = ["1", "2"]
+name_list = [character.name for character in character_list.values()]
 state = "menu"
 
 keybinds = {
@@ -38,6 +38,16 @@ def draw_player(player):
 def draw_platform(platform_to_draw):
     pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width, platform_to_draw.height])
 
+def draw_game(players, platforms):
+    screen.fill((255, 255, 255))
+
+    for platform in platforms:
+        draw_platform(platform)
+
+    for character in players:
+        draw_player(character)
+
+
 #Pygame stuff
 pygame.init()
 
@@ -45,7 +55,7 @@ screen = pygame.display.set_mode((800, 600))
 pygame.display.set_caption('Platform Fighter Prototype')
 
 clock = pygame.time.Clock()
-delta_time = 0.1
+delta_time = clock.tick(60)/1000
 running = True
 state = None
 sstate = "menu"
@@ -55,6 +65,8 @@ sstate = "menu"
 camera_mode = "Fixed"
 
 while running:
+    clock.tick(60)
+
     if sstate == "menu":
         players = run_menu(screen, clock)
 
@@ -69,16 +81,18 @@ while running:
 
         game = Game(platforms, players)
 
-        print("GAME CREATED")
-
         sstate = "game"
 
     elif sstate == "game":
 
-        screen.fill((255,255,255))
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sstate = "pause"
+                    continue
 
         all_keys = pygame.key.get_pressed()
 
@@ -90,18 +104,29 @@ while running:
         if pressed_keys["1"] or pressed_keys["2"]:
             print(pressed_keys)
 
-
         state = game.update_positions(pressed_keys)
+
         if state is None:
 
-            for platform in platforms:
-                draw_platform(platform)
-
-            for character in players:
-                draw_player(character)
+            draw_game(players, platforms)
 
         else:
             running = False
+
+        pygame.display.flip()
+
+    elif sstate == "pause":
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    sstate = "game"
+
+        draw_game(players, platforms)
+        run_pause(screen)
+
 
         pygame.display.flip()
 
@@ -110,9 +135,11 @@ while running:
     #    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
 
 
-        clock.tick(60)
 
-print(state.name + " has won!")
+try:
+    print(state.name + " has won!")
+except AttributeError:
+    print("System exit")
 
 pygame.quit()
 sys.exit()
