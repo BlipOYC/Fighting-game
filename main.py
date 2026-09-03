@@ -52,7 +52,7 @@ def draw_game(players, platforms):
 pygame.init()
 
 screen = pygame.display.set_mode((800, 600))
-pygame.display.set_caption('Platform Fighter Prototype')
+pygame.display.set_caption('Insert Game Name Here')
 
 clock = pygame.time.Clock()
 delta_time = clock.tick(60)/1000
