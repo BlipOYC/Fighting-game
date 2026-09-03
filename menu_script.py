@@ -20,6 +20,9 @@ class CharaBox:
         else:
             colour = (60, 60, 90)
 
+        shadow_rect = self.rect.move(0, 4)
+        pygame.draw.rect(screen, (10, 10, 15), shadow_rect, border_radius=10)
+
         pygame.draw.rect(screen, colour, self.rect, border_radius=10)
 
         text_surface = self.font.render(self.text, True, "white")
@@ -41,6 +44,9 @@ class Button:
             colour = (100, 100, 150)
         else:
             colour = (60, 60, 90)
+
+        shadow_rect = self.rect.move(0, 5)
+        pygame.draw.rect(screen, (10, 10, 15), shadow_rect, border_radius=10)
 
         pygame.draw.rect(screen, colour, self.rect, border_radius=10)
 
@@ -110,6 +116,7 @@ def run_menu(screen, clock):
         screen.fill((200, 200, 200))
 
         start_button = Button((0, 0, 200, 50), (400, 120), "START GAME", font)
+        settings_button = Button((0, 0, 200, 50), (400, 300), "SETTINGS", font)
         quit_button = Button((0, 0, 200, 50), (400, 540), "QUIT", font)
         return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
 
@@ -120,12 +127,22 @@ def run_menu(screen, clock):
             if substate == "main_menu":
                 if start_button.clicked(event):
                     substate = "character_pos"
+                if settings_button.clicked(event):
+                    substate = "settings"
                 if quit_button.clicked(event):
                     pygame.quit()
 
+            if substate == "settings":
+                if return_button.clicked(event):
+                    substate = "main_menu"
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        substate = "main_menu"
+
             if substate == "character_pos":
                 if event.type == pygame.KEYDOWN:
-
+                    if event.key == pygame.K_ESCAPE:
+                        substate = "main_menu"
                     # Player 1
                     if event.key == pygame.K_f:
                         p1_selection_flag = not p1_selection_flag
@@ -176,24 +193,33 @@ def run_menu(screen, clock):
 
         if substate == "main_menu":
             menu_display_rect = font.render("MENU", True, (0, 0, 0))
+            #THE MENU DISPLAY RECT WILL BE REPLACED BY A LOGO IN THE FUTURE?
+
             screen.blit(menu_display_rect, menu_display_rect.get_rect(center=(400, 40)))
-            start_button = Button((0, 0, 200, 50), (400, 120), "START GAME", font)
-            quit_button = Button((0, 0, 200, 50), (400, 540), "QUIT", font)
 
             start_button.draw(screen)
             quit_button.draw(screen)
+            settings_button.draw(screen)
+
+        if substate == "settings":
+            wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
+            screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
+            return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
+            return_button.draw(screen)
 
         if substate == "character_pos":
             character_pos_display_rect = font.render("SELECT CHARACTER", True, (0, 0, 0))
             screen.blit(character_pos_display_rect, character_pos_display_rect.get_rect(center=(400, 40)))
+            subtitle = font.render("Player 1: WASD + F     Player 2: ARROWS + ;", True, (50, 50, 50))
+            screen.blit(subtitle, subtitle.get_rect(center=(400, 95)))
             for idx, box in enumerate(character_boxes):
+                #Eventually, perhaps adding the character to the boxes will be a good idea.
                 box.draw(screen,
                          p1=(p1pos==idx+1),
                          p2=(p2pos==idx+1)
                          )
             return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
             return_button.draw(screen)
-
 
 
         pygame.display.flip()
