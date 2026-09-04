@@ -100,7 +100,8 @@ def run_menu(screen, clock):
     p1_selection_flag = False
     p2_selection_flag = False
     info = pygame.display.Info()
-    font = pygame.font.Font(None, 40)
+    # fontChange
+    font = pygame.font.SysFont(None, 40)
     character_boxes = []
     for idx, character in enumerate(character_list):
         x, y = calculate_character_positions(idx, len(character_list), info.current_w)
@@ -135,9 +136,18 @@ def run_menu(screen, clock):
             if substate == "settings":
                 if return_button.clicked(event):
                     substate = "main_menu"
+                if keybinds_button.clicked(event):
+                    substate = "keybinds"
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         substate = "main_menu"
+
+            if substate == "keybinds":
+                if return_button.clicked(event):
+                    substate = "settings"
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        substate = "settings"
 
             if substate == "character_pos":
                 if event.type == pygame.KEYDOWN:
@@ -202,15 +212,23 @@ def run_menu(screen, clock):
             settings_button.draw(screen)
 
         if substate == "settings":
+            #Volume slider
+            #Edit keybinds
             wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
             screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
+            keybinds_button = Button((0, 0, 200, 50), (400, 300), "RETURN", font)
             return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
+            keybinds_button.draw(screen)
             return_button.draw(screen)
+
 
         if substate == "character_pos":
             character_pos_display_rect = font.render("SELECT CHARACTER", True, (0, 0, 0))
             screen.blit(character_pos_display_rect, character_pos_display_rect.get_rect(center=(400, 40)))
+
+            #To edit
             subtitle = font.render("Player 1: WASD + F     Player 2: ARROWS + ;", True, (50, 50, 50))
+
             screen.blit(subtitle, subtitle.get_rect(center=(400, 95)))
             for idx, box in enumerate(character_boxes):
                 #Eventually, perhaps adding the character to the boxes will be a good idea.
@@ -231,7 +249,7 @@ def run_pause(screen):
     overlay.fill((0, 0, 0))
     screen.blit(overlay, (0, 0))
 
-    paused_font = pygame.font.Font(None, 72)
+    paused_font = pygame.font.SysFont(None, 72)
     text = paused_font.render("PAUSED", True, (255, 255, 255))
     text_rect = text.get_rect(topleft=(20, 20))
     screen.blit(text, text_rect)

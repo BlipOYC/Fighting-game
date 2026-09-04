@@ -58,7 +58,7 @@ clock = pygame.time.Clock()
 delta_time = clock.tick(60)/1000
 running = True
 state = None
-sstate = "menu"
+overstate = "menu"
 
 
 #Camera stuffs
@@ -67,7 +67,7 @@ camera_mode = "Fixed"
 while running:
     clock.tick(60)
 
-    if sstate == "menu":
+    if overstate == "menu":
         players = run_menu(screen, clock)
 
         print("MENU RETURNED:", players)
@@ -81,9 +81,9 @@ while running:
 
         game = Game(platforms, players)
 
-        sstate = "game"
+        overstate = "game"
 
-    elif sstate == "game":
+    elif overstate == "game":
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -91,7 +91,7 @@ while running:
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    sstate = "pause"
+                    overstate = "pause"
                     continue
 
         all_keys = pygame.key.get_pressed()
@@ -115,14 +115,14 @@ while running:
 
         pygame.display.flip()
 
-    elif sstate == "pause":
+    elif overstate == "pause":
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
-                    sstate = "game"
+                    overstate = "game"
 
         draw_game(players, platforms)
         run_pause(screen)
