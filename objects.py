@@ -98,8 +98,7 @@ class Character:
 
         self.is_dashing = True
         self.dash_timer = self.archetype.dash_duration
-        self.time_since_last_dash = 0
-        self.intangible = True
+        self.intangible = False
 
         if self.time_since_last_dash >= self.dash_delay:
             if self.grounded:
@@ -127,8 +126,7 @@ class Character:
                 self.intangible = True
 
             self.time_since_last_dash = 0
-            self.dash_delay *= 1.5
-                #For 3 frames and only for air dashes
+
 
     def apply_gravity(self):
         if not self.grounded:

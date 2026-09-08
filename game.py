@@ -64,6 +64,10 @@ class Game:
             else:
                 if "dash" in self.inputs[character.name]:
                     character.dash(self.inputs[character.name])
+                    if character.grounded:
+                        character.dash_delay = character.base_dash_delay
+                    else:
+                        character.dash_delay *= 1.5
                 else:
                     character.apply_gravity() #Moved here so gravity does not affect dashing speeds
                     character.move(self.inputs[character.name])

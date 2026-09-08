@@ -47,7 +47,6 @@ def draw_game(players, platforms):
     for character in players:
         draw_player(character)
 
-
 #Pygame stuff
 pygame.init()
 

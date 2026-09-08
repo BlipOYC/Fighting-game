@@ -2,6 +2,55 @@
 import pygame
 from game_objects_list import character_list
 
+class Slider:
+    def __init__(self, min_val, max_val, width, height, center,
+                 filled_color, unfilled_color, knob_color, touch_color, font_color):
+        pos = (0,0)
+        self.val_range = (min_val, max_val)
+        self.slider_val = min_val
+        self.slider = pygame.Rect(*pos, width, height)
+        self.slider.center = center
+        self.filled_color = filled_color
+        self.unfilled_color = unfilled_color
+        self.is_active = False
+        self.font = pygame.font.Font(None, 30)
+        self.font_color = font_color
+
+        self.knob_color = {
+            True: touch_color,
+            False: knob_color
+        }
+        self.knob_height = height + 14
+        self.knob = pygame.Rect(pos[0], pos[1] - 7, 10, self.knob_height)
+        self.knob.center = center
+        self.filled_slider = pygame.Rect(*pos, self.knob.x - self.slider.x, height)
+        self.filled_slider.center = center
+
+    def update_slider(self, mouse_pos, mouse_state):
+        if self.knob.collidepoint(mouse_pos) and mouse_state[0] and not self.is_active:
+            self.is_active = True
+        if not self.knob.collidepoint(mouse_pos) and mouse_state[0] and self.is_active:
+            self.knob.centerx = mouse_pos[0]
+        elif not (self.knob.collidepoint(mouse_pos) and mouse_state[0]) and self.is_active:
+            self.is_active = False
+
+        self.knob.centerx = mouse_pos[0] if self.is_active else self.knob.centerx
+        if self.knob.x < self.slider.x:
+            self.knob.x = self.slider.x
+        elif self.knob.right > self.slider.right:
+            self.knob.right = self.slider.right
+
+        self.filled_slider.width = self.knob.x - self.slider.x
+        self.slider_val = int(
+            ((self.val_range[1] - self.val_range[0]) / self.slider.w) * (self.knob.centerx - self.slider.x))
+        self.slider_text = self.font.render(f"{self.slider_val}", True, self.font_color)
+
+    def draw(self, window):
+        pygame.draw.rect(window, self.unfilled_color, self.slider, border_radius=7)
+        pygame.draw.rect(window, self.knob_color[self.is_active], self.knob, border_radius=5)
+        pygame.draw.rect(window, self.filled_color, self.filled_slider, border_radius=7)
+        window.blit(self.slider_text, (self.slider.x - self.slider_text.get_width() - 4, self.knob.y))
+
 class CharaBox:
     def __init__(self, rect, text, font, center=None):
         self.rect = pygame.Rect(rect)
@@ -119,7 +168,10 @@ def run_menu(screen, clock):
         start_button = Button((0, 0, 200, 50), (400, 120), "START GAME", font)
         settings_button = Button((0, 0, 200, 50), (400, 300), "SETTINGS", font)
         quit_button = Button((0, 0, 200, 50), (400, 540), "QUIT", font)
+        keybinds_button = Button((0, 0, 200, 50), (400, 300), "RETURN", font)
         return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
+        volume_slider = Slider(0, 100, 200, 50, (400, 400),
+                               (100, 100, 100), (150, 150, 150), (205, 10, 10), (245, 20, 20), (0, 0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -133,7 +185,7 @@ def run_menu(screen, clock):
                 if quit_button.clicked(event):
                     pygame.quit()
 
-            if substate == "settings":
+            elif substate == "settings":
                 if return_button.clicked(event):
                     substate = "main_menu"
                 if keybinds_button.clicked(event):
@@ -142,14 +194,14 @@ def run_menu(screen, clock):
                     if event.key == pygame.K_ESCAPE:
                         substate = "main_menu"
 
-            if substate == "keybinds":
+            elif substate == "keybinds":
                 if return_button.clicked(event):
                     substate = "settings"
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         substate = "settings"
 
-            if substate == "character_pos":
+            elif substate == "character_pos":
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         substate = "main_menu"
@@ -211,18 +263,19 @@ def run_menu(screen, clock):
             quit_button.draw(screen)
             settings_button.draw(screen)
 
-        if substate == "settings":
+        elif substate == "settings":
             #Volume slider
             #Edit keybinds
             wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
             screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
-            keybinds_button = Button((0, 0, 200, 50), (400, 300), "RETURN", font)
+            keybinds_button = Button((0, 0, 200, 50), (400, 300), "KEYBINDS", font)
             return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
             keybinds_button.draw(screen)
+            volume_slider.draw(screen)
             return_button.draw(screen)
 
 
-        if substate == "character_pos":
+        elif substate == "character_pos":
             character_pos_display_rect = font.render("SELECT CHARACTER", True, (0, 0, 0))
             screen.blit(character_pos_display_rect, character_pos_display_rect.get_rect(center=(400, 40)))
 
@@ -242,6 +295,7 @@ def run_menu(screen, clock):
 
         pygame.display.flip()
         clock.tick(60)
+        print(substate)
 
 def run_pause(screen):
     overlay = pygame.Surface((800, 600))
