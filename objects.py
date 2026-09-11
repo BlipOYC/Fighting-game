@@ -2,10 +2,10 @@ import pygame, math
 #Coordinates are top-left based
 #Inputs will be dicts in the {character: direction} format
 #Hopefully it works
-def sine(n: float | int) -> float:
+def sine(n: float | int) -> float | int:
     return math.sin(math.radians(n))
 
-def cosine(n):
+def cosine(n: float | int) -> float | int:
     return math.cos(math.radians(n))
 
 class Platform:
@@ -224,19 +224,18 @@ class Character:
         return self.lives > 0
 
 class Attack:
-    def __init__(self, associated_hitboxes, owner):
+    def __init__(self, associated_hitboxes):
         self.associated_hitboxes = associated_hitboxes
         self.active_ticks = 0
         self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
-        self.owner = owner
 
     def update(self):
         self.active_ticks += 1
         self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
 
-    def collide(self, characters):
+    def collide(self, characters, owner):
         for character in characters:
-            if character == self.owner:
+            if character == owner:
                 continue
             if character.intangible:
                 continue
@@ -246,19 +245,17 @@ class Attack:
                 for hitbox in hitboxes:
                     if hitbox.rect.colliderect(character.hurtboxes):
                         character.get_hit(self)
-                        return hitbox #So we can apply knockback
+                        return hitbox #So we can apply knockback of specific hitbox
                 return None
         return None
 
 
 class Hitbox:
-    def __init__(self, character, x, y, width, height, active_frames, damage, force, direction, facing, priority=0, fixed_force=False):
-        self.character = character
+    def __init__(self, x, y, width, height, active_frames, damage, force, direction, facing, priority=0, fixed_force=False):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
-        self.rect = pygame.Rect([self.x + character.x, self.y + character.y, self.width, self.height])
         self.active_frames = active_frames #e.g. if attack is inputted, maybe this specific hitbox is active on frames 8 to 9, and appears as (8, 9)
         self.damage = damage
         self.force = force
@@ -266,3 +263,6 @@ class Hitbox:
         self.facing = facing
         self.priority = priority
         self.fixed_force = fixed_force
+
+    def make_rect(self, owner):
+        self.rect = pygame.Rect([self.x + owner.x, self.y + owner.y, self.width, self.height])

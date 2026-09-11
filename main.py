@@ -134,7 +134,6 @@ while running:
     #    print(character_list["chara2"].x, character_list["chara2"].y, character_list["chara2"].vx, character_list["chara2"].vy)
 
 
-
 try:
     print(state.name + " has won!")
 except AttributeError:

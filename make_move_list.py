@@ -11,8 +11,31 @@ rushdowns = {
     "dAir": (),
 }
 
+brawlers = {
+    "nLight": (),
+    "fLight": (),
+    "dLight": (),
+    "grab": (),
+    "throw": (),
+    "nAir": (),
+    "fAir": (),
+    "uAir": (),
+    "dAir": (),
+}
+
+zoners = {
+    "nLight": (),
+    "fLight": (),
+    "dLight": (),
+    "grab": (),
+    "throw": (),
+    "nAir": (),
+    "fAir": (),
+    "uAir": (),
+    "dAir": (),
+}
+
 def create_files():
-    brawlers = zoners = rushdowns.copy()
     with open("rushdown_moves.json", mode="w", encoding="utf-8") as write_file:
         json.dump(rushdowns, write_file)
 

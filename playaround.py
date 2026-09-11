@@ -41,7 +41,6 @@ class Slider:
             height
         )
 
-
     def update_slider(self, mouse_pos, mouse_state):
         if self.knob.collidepoint(mouse_pos) and mouse_state[0] and not self.is_active:
             self.is_active = True
