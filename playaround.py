@@ -58,7 +58,7 @@ class Slider:
         elif self.knob.x > self.slider.right:
             self.knob.x = self.slider.right
 
-        self.filled_slider.width = self.knob.x - self.slider.x
+        self.filled_slider.width = max(self.knob.x - self.slider.x, 0)
 
         self.slider_val = max(
             min(
@@ -120,6 +120,7 @@ while running:
         True,
         slider.font_color
     )
+
     screen.blit(text, (350, 340))
 
     pygame.display.flip()

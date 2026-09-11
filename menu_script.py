@@ -52,7 +52,7 @@ class Slider:
         elif self.knob.x > self.slider.right:
             self.knob.x = self.slider.right
 
-        self.filled_slider.width = self.knob.x - self.slider.x
+        self.filled_slider.width = max(self.knob.x - self.slider.x, 0)
 
         self.slider_val = max(
             min(
@@ -188,8 +188,18 @@ def run_menu(screen, clock):
 
     running = True
     proceed_to_game_flag = False
-    volume_slider = Slider(0, 100, 400, 50, (400, 400),
-                           (100, 100, 100), (150, 150, 150), (205, 10, 10), (245, 20, 20), (0, 0, 0))
+    volume_slider = Slider(
+        0,
+        100,
+        400,
+        10,
+        (500, 400),
+        (100, 100, 100),
+        (150, 150, 150),
+        (205, 10, 10),
+        (245, 20, 20),
+        (0, 0, 0)
+    )
     while running:
         screen.fill((200, 200, 200))
 
@@ -198,8 +208,6 @@ def run_menu(screen, clock):
         quit_button = Button((0, 0, 200, 50), (400, 540), "QUIT", font)
         keybinds_button = Button((0, 0, 200, 50), (400, 300), "KEYBINDS", font)
         return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
-        volume_slider = Slider(0, 100, 400, 50, (400, 400),
-                               (100, 100, 100), (150, 150, 150), (205, 10, 10), (245, 20, 20), (0, 0, 0))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -294,15 +302,26 @@ def run_menu(screen, clock):
         elif substate == "settings":
             #Volume slider
             #Edit keybinds
-            wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
+            wip_rect = font.render("SETTINGS", True, (0, 0, 0))
             screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
             mouse_pos = pygame.mouse.get_pos()
             mouse_state = pygame.mouse.get_pressed()
 
             volume_slider.update_slider(mouse_pos, mouse_state)
+            text = volume_slider.font.render(
+                f"VOLUME: {volume_slider.slider_val}",
+                True,
+                volume_slider.font_color
+            )
+
+            screen.blit(text, (100, 390))
+
             keybinds_button.draw(screen)
             volume_slider.draw(screen)
             return_button.draw(screen)
+
+        elif substate == "keybinds":
+            pass
 
 
         elif substate == "character_pos":
