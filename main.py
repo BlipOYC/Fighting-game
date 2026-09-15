@@ -8,7 +8,7 @@ name_list = [character.name for character in character_list.values()]
 state = "menu"
 
 
-keybinds_file = "keybinds.json" #Make this later
+#keybinds_file = "keybinds.json" #Make this later
 
 #Default Keybinds:
 keybinds = {

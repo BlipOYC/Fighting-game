@@ -3,6 +3,7 @@ import pygame, os, json
 from game_objects_list import character_list
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
+#keybind_file = "keybinds.json"
 
 class Slider:
     def __init__(self, min_val, max_val, width, height, center,
