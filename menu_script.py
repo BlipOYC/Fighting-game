@@ -321,8 +321,10 @@ def run_menu(screen, clock):
             return_button.draw(screen)
 
         elif substate == "keybinds":
-            pass
+            wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
+            screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
 
+            return_button.draw(screen)
 
         elif substate == "character_pos":
             character_pos_display_rect = font.render("SELECT CHARACTER", True, (0, 0, 0))
@@ -344,7 +346,6 @@ def run_menu(screen, clock):
 
         pygame.display.flip()
         clock.tick(60)
-        print(substate)
 
 def run_pause(screen):
     overlay = pygame.Surface((800, 600))

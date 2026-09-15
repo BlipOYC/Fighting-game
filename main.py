@@ -100,8 +100,8 @@ while running:
             "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
         }
 
-        if pressed_keys["1"] or pressed_keys["2"]:
-            print(pressed_keys)
+        #if pressed_keys["1"] or pressed_keys["2"]:
+        #    print(pressed_keys)
 
         state = game.update_positions(pressed_keys)
 
