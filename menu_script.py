@@ -1,6 +1,8 @@
 #+Maps and keybinds if we have time
-import pygame
+import pygame, os, json
 from game_objects_list import character_list
+
+#We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 
 class Slider:
     def __init__(self, min_val, max_val, width, height, center,
@@ -82,6 +84,7 @@ class CharaBox:
         self.rect = pygame.Rect(rect)
         self.text = text
         self.font = font
+        self.confirmed = False
         if center:
             self.rect.center = center
 
@@ -136,6 +139,7 @@ class Button:
             and event.button == 1
             and self.rect.collidepoint(event.pos)
         )
+
 
 
 def calculate_character_positions(n_char, tot_char, screen_width):

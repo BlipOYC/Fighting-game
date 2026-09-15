@@ -1,4 +1,4 @@
-import pygame, sys
+import pygame, sys, json
 from game import Game
 from game_objects_list import character_list, maps
 from menu_script import run_menu, run_pause
@@ -7,6 +7,10 @@ from menu_script import run_menu, run_pause
 name_list = [character.name for character in character_list.values()]
 state = "menu"
 
+
+keybinds_file = "keybinds.json" #Make this later
+
+#Default Keybinds:
 keybinds = {
     "1": {
         pygame.K_w: "up",
@@ -27,6 +31,7 @@ keybinds = {
         pygame.K_QUOTE: "heavy"
     }
 }
+
 
 platforms = maps["map1"]["platforms"]
 ground = maps["map1"]["ground"]
