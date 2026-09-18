@@ -1,6 +1,8 @@
 #+Maps and keybinds if we have time
 import pygame, os, json
 from game_objects_list import character_list
+from main import default_keybinds
+
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 #keybind_file = "keybinds.json"
@@ -141,7 +143,24 @@ class Button:
             and self.rect.collidepoint(event.pos)
         )
 
+def menu_load_keybinds(keybinds_file):
+    if os.path.exists(keybinds_file):
+        try:
+            with open(keybinds_file, "r") as f:
+                data = json.load(f)
+                # Convert string key names back to pygame key constants
+                return {action: getattr(pygame, key) for action, key in data.items()}
+        except (json.JSONDecodeError, AttributeError, KeyError):
+            pass
+    return default_keybinds.copy()
 
+def menu_save_keybinds(binds, keybinds_file):
+    with open(keybinds_file, "w") as f:
+        # Store as string names for readability
+        json.dump({pygame.key.name(key): action for action, key in binds.items()}, f)
+
+keybinds = menu_load_keybinds(default_keybinds)
+selected_action = None #Will store the instruction to be changed via keybinds
 
 def calculate_character_positions(n_char, tot_char, screen_width):
     column_positions = [
@@ -170,6 +189,25 @@ def calculate_character_positions(n_char, tot_char, screen_width):
     x = column_positions[column]
     y = 120 + row * 80
     return (x, y)
+
+def create_key_positions(current_keybinds, screen_width):
+    column_positions = [
+        (screen_width // 6) * 2,
+        (screen_width // 6) * 3,
+        (screen_width // 6) * 4,
+    ]
+    start_row = 120
+    row_gap = 60
+
+    for idx, item in enumerate(current_keybinds.items()):
+        #We will create the row
+        #----------------------------
+        #Key first
+        key, move = item
+        key_rect = font.render(move, True, (0, 0, 0))
+        screen.blit(key_rect, key_rect.get_rect(center=(column_positions[0], start_row + row_gap * idx)))
+
+
 
 # noinspection PyInconsistentReturns
 # Which for some reason is needed cuz pycharm is fussy
