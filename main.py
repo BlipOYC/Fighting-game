@@ -8,10 +8,10 @@ name_list = [character.name for character in character_list.values()]
 state = "menu"
 
 
-keybinds_file = "keybinds.json" #Make this later
+KEYBINDS_FILE = "keybinds.json" #Make this later
 
 #Default Keybinds:
-default_keybinds = {
+DEFAULT_KEYBINDS = {
     "1": {
         pygame.K_w: "up",
         pygame.K_s: "down",
@@ -53,18 +53,18 @@ def draw_game(players, platforms):
         draw_player(character)
 
 def load_keybinds():
-    if os.path.exists(keybinds_file):
+    if os.path.exists(KEYBINDS_FILE):
         try:
-            with open(keybinds_file, "r") as f:
+            with open(KEYBINDS_FILE, "r") as f:
                 data = json.load(f)
                 # Convert string key names back to pygame key constants
                 return {action: getattr(pygame, key) for action, key in data.items()}
         except (json.JSONDecodeError, AttributeError, KeyError):
             pass
-    return default_keybinds.copy()
+    return DEFAULT_KEYBINDS.copy()
 
 def save_keybinds(binds):
-    with open(keybinds_file, "w") as f:
+    with open(KEYBINDS_FILE, "w") as f:
         # Store as string names for readability
         json.dump({pygame.key.name(key): action for action, key in binds.items()}, f)
 
@@ -90,7 +90,8 @@ while running:
     clock.tick(60)
 
     if overstate == "menu":
-        players = run_menu(screen, clock, keybinds)
+
+        players = run_menu(screen, clock, KEYBINDS_FILE)
 
         print("MENU RETURNED:", players)
 

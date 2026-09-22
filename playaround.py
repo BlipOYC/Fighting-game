@@ -3,7 +3,7 @@ import json
 import os
 
 # ------------------ CONFIG ------------------
-SETTINGS_FILE = "keybinds.json"
+SETTINGS_FILE = "keybinds_playaround.json"
 DEFAULT_BINDS = {
     "Move Left": pygame.K_a,
     "Move Right": pygame.K_d,
@@ -33,6 +33,7 @@ def load_keybinds():
 def save_keybinds(binds):
     with open(SETTINGS_FILE, "w") as f:
         # Store as string names for readability
+        print({action: pygame.key.name(key) for action, key in binds.items()})
         json.dump({action: pygame.key.name(key) for action, key in binds.items()}, f)
 
 keybinds = load_keybinds()

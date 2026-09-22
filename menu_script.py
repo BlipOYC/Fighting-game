@@ -1,8 +1,29 @@
 #+Maps and keybinds if we have time
 import pygame, os, json
 from game_objects_list import character_list
-from main import default_keybinds
 
+DEFAULT_KEYBINDS = {
+    "1": {
+        pygame.K_w: "up",
+        pygame.K_s: "down",
+        pygame.K_a: "left",
+        pygame.K_d: "right",
+        pygame.K_q: "dash",
+        pygame.K_f: "attack",
+        pygame.K_g: "heavy",
+    },
+    "2": {
+        pygame.K_UP: "up",
+        pygame.K_DOWN: "down",
+        pygame.K_LEFT: "left",
+        pygame.K_RIGHT: "right",
+        pygame.K_SLASH: "dash",
+        pygame.K_SEMICOLON: "attack",
+        pygame.K_QUOTE: "heavy"
+    }
+}
+
+current_keybinds = DEFAULT_KEYBINDS.copy()
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 #keybind_file = "keybinds.json"
@@ -144,6 +165,7 @@ class Button:
         )
 
 def menu_load_keybinds(keybinds_file):
+    print(keybinds_file)
     if os.path.exists(keybinds_file):
         try:
             with open(keybinds_file, "r") as f:
@@ -152,14 +174,14 @@ def menu_load_keybinds(keybinds_file):
                 return {action: getattr(pygame, key) for action, key in data.items()}
         except (json.JSONDecodeError, AttributeError, KeyError):
             pass
-    return default_keybinds.copy()
+    return DEFAULT_KEYBINDS.copy()
 
 def menu_save_keybinds(binds, keybinds_file):
     with open(keybinds_file, "w") as f:
         # Store as string names for readability
         json.dump({pygame.key.name(key): action for action, key in binds.items()}, f)
 
-keybinds = menu_load_keybinds(default_keybinds)
+keybinds = menu_load_keybinds("keybinds.json")
 selected_action = None #Will store the instruction to be changed via keybinds
 
 def calculate_character_positions(n_char, tot_char, screen_width):
@@ -191,6 +213,7 @@ def calculate_character_positions(n_char, tot_char, screen_width):
     return (x, y)
 
 def create_key_positions(current_keybinds, screen_width):
+    print(current_keybinds)
     column_positions = [
         (screen_width // 6) * 2,
         (screen_width // 6) * 3,
@@ -199,19 +222,29 @@ def create_key_positions(current_keybinds, screen_width):
     start_row = 120
     row_gap = 60
 
-    for idx, item in enumerate(current_keybinds.items()):
+    for player_idx, moves in enumerate(current_keybinds.items()):
         #We will create the row
         #----------------------------
-        #Key first
-        key, move = item
-        key_rect = font.render(move, True, (0, 0, 0))
-        screen.blit(key_rect, key_rect.get_rect(center=(column_positions[0], start_row + row_gap * idx)))
+        #Move first
+        if player_idx == 0:
+            for idx, item in enumerate(moves[1].items()):
+                key, move = item
+                key = str(key)
+                key_rect = font.render(key, True, (0, 0, 0))
+                move_rect = font.render(move, True, (0, 0, 0))
+                screen.blit(key_rect, key_rect.get_rect(center=(column_positions[1], start_row + row_gap * idx)))
+                screen.blit(move_rect, move_rect.get_rect(center=(column_positions[0], start_row + row_gap * idx)))
+        elif player_idx == 1:
+            for idx, item in enumerate(moves[1].items()):
+                key = str(item[0])
+                move_rect = font.render(key, True, (0, 0, 0))
+                screen.blit(move_rect, move_rect.get_rect(center=(column_positions[2], start_row + row_gap * idx)))
 
 
 
 # noinspection PyInconsistentReturns
 # Which for some reason is needed cuz pycharm is fussy
-def run_menu(screen, clock):
+def run_menu(screen, clock, keybinds_file):
     substate = "main_menu"
     p1pos = 1
     p2pos = 3
@@ -228,6 +261,7 @@ def run_menu(screen, clock):
                    character_list[character].name,
                    font)
         )
+
 
     running = True
     proceed_to_game_flag = False
@@ -365,7 +399,11 @@ def run_menu(screen, clock):
 
         elif substate == "keybinds":
             wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
+            create_key_positions(current_keybinds, info.current_w)
             screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
+
+            if False: #Activate this whenever this key is selected to be changed by keybinds
+                pass
 
             return_button.draw(screen)
 
@@ -415,4 +453,4 @@ if __name__ == "__main__":
     font = pygame.font.Font(None, 40)
     substate = "main_menu"
 
-    print(run_menu(screen, clock))
+    print(run_menu(screen, clock, keybinds_file="keybinds.json"))
