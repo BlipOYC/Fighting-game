@@ -44,6 +44,7 @@ def draw_platform(platform_to_draw):
     pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width, platform_to_draw.height])
 
 def draw_game(players, platforms):
+    #Fetch backgrounds
     screen.fill((255, 255, 255))
 
     for platform in platforms:
