@@ -1,5 +1,5 @@
 #+Maps and keybinds if we have time
-import pygame, os, json
+import pygame, os, sys, json
 from game_objects_list import character_list
 
 DEFAULT_KEYBINDS = {
@@ -23,7 +23,15 @@ DEFAULT_KEYBINDS = {
     }
 }
 
+ARROWS = {
+    "left": "←",
+    "up": "↑",
+    "right": "→",
+    "down": "↓",
+}
+
 current_keybinds = DEFAULT_KEYBINDS.copy()
+
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 #keybind_file = "keybinds.json"
@@ -165,7 +173,6 @@ class Button:
         )
 
 def menu_load_keybinds(keybinds_file):
-    print(keybinds_file)
     if os.path.exists(keybinds_file):
         try:
             with open(keybinds_file, "r") as f:
@@ -213,14 +220,17 @@ def calculate_character_positions(n_char, tot_char, screen_width):
     return (x, y)
 
 def create_key_positions(current_keybinds, screen_width):
-    print(current_keybinds)
     column_positions = [
         (screen_width // 6) * 2,
         (screen_width // 6) * 3,
         (screen_width // 6) * 4,
     ]
-    start_row = 120
-    row_gap = 60
+    start_row = 150
+    row_gap = 50
+    player_one_rect = font.render("P1", True, (255, 0, 0))
+    player_two_rect = font.render("P2", True, (0, 0, 255))
+    screen.blit(player_one_rect, player_one_rect.get_rect(center=(column_positions[1], start_row-row_gap)))
+    screen.blit(player_two_rect, player_two_rect.get_rect(center=(column_positions[2], start_row-row_gap)))
 
     for player_idx, moves in enumerate(current_keybinds.items()):
         #We will create the row
@@ -229,16 +239,26 @@ def create_key_positions(current_keybinds, screen_width):
         if player_idx == 0:
             for idx, item in enumerate(moves[1].items()):
                 key, move = item
-                key = str(key)
-                key_rect = font.render(key, True, (0, 0, 0))
-                move_rect = font.render(move, True, (0, 0, 0))
-                screen.blit(key_rect, key_rect.get_rect(center=(column_positions[1], start_row + row_gap * idx)))
+                key = pygame.key.name(key)
+                if ARROWS.get(key, key) == key:
+                    key_rect = font.render(key.upper(), True, (0, 0, 0))
+                    screen.blit(key_rect, key_rect.get_rect(center=(column_positions[1], start_row + row_gap * idx)))
+                else:
+                    key = ARROWS[key]
+                    #FIX IF HAVE TIME
+                    temp_font = pygame.font.Font("dejavusans", 40)
+                    key_rect = temp_font.render(key.upper(), True, (0, 0, 0))
+                    screen.blit(key_rect, key_rect.get_rect(center=(column_positions[1], start_row + row_gap * idx)))
+
+                move_rect = font.render(move.upper(), True, (0, 0, 0))
                 screen.blit(move_rect, move_rect.get_rect(center=(column_positions[0], start_row + row_gap * idx)))
         elif player_idx == 1:
             for idx, item in enumerate(moves[1].items()):
-                key = str(item[0])
-                move_rect = font.render(key, True, (0, 0, 0))
-                screen.blit(move_rect, move_rect.get_rect(center=(column_positions[2], start_row + row_gap * idx)))
+                key = item[0]
+                key = pygame.key.name(key)
+                key = ARROWS.get(key, key)
+                key_rect = font.render(key.upper(), True, (0, 0, 0))
+                screen.blit(key_rect, key_rect.get_rect(center=(column_positions[2], start_row + row_gap * idx)))
 
 
 
@@ -289,6 +309,7 @@ def run_menu(screen, clock, keybinds_file):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
+                sys.exit()
 
             if substate == "main_menu":
                 if start_button.clicked(event):

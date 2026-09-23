@@ -93,7 +93,6 @@ while running:
 
         players = run_menu(screen, clock, KEYBINDS_FILE)
 
-        print("MENU RETURNED:", players)
 
         if players is None:
             running = False

@@ -10,7 +10,6 @@ DEFAULT_BINDS = {
     "Jump": pygame.K_SPACE
 }
 # ---------------------------------------------
-
 pygame.init()
 screen = pygame.display.set_mode((500, 300))
 pygame.display.set_caption("Keybinding Menu Example")
