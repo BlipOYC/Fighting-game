@@ -11,6 +11,7 @@ state = "menu"
 KEYBINDS_FILE = "keybinds.json" #Make this later
 
 #Default Keybinds:
+#MODIFY CODE SO THAT THIS WILL WORK REGARDLESS OF CHARACTER NAME
 DEFAULT_KEYBINDS = {
     "1": {
         pygame.K_w: "up",
@@ -134,7 +135,7 @@ while running:
             draw_game(players, platforms)
 
         else:
-            running = False
+            overstate = "end_fight"
 
         pygame.display.flip()
 
@@ -150,6 +151,9 @@ while running:
         draw_game(players, platforms)
         run_pause(screen)
 
+    elif overstate == "end_fight":
+        #Make an actual menu for this in the menu_script
+        overstate = "menu"
 
         pygame.display.flip()
 

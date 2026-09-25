@@ -76,6 +76,9 @@ maps = {
             ],
             "ground": [
                 Ground(10, 400, 700, 10, False)
+            ],
+            "background": [
+                None #Pass in an image from the assets tab
             ]
         }
 }

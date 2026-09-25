@@ -1,4 +1,5 @@
 import pygame
+from random import choice
 
 def overlap(range1, range2):
     start1, end1 = range1
@@ -25,6 +26,10 @@ class Game:
     def __init__(self, platforms, characters):
         self.platforms = platforms
         self.characters = characters
+        self.game_zone = [ #Let's keep them on screen first
+            (0, 0),
+            (800, 600),
+        ]
         self.inputs = {}
 
     def check_grounded(self):
@@ -53,6 +58,38 @@ class Game:
             return "Tie"
 
         for character in self.characters:
+            #Add check for OOB
+            character_center_x, character_center_y = character.x + character.width//2, character.y + character.height//2
+            if not(self.game_zone[0][0] <= character_center_x <= self.game_zone[1][0] and self.game_zone[0][1] <= character_center_y <= self.game_zone[1][1]):
+                character.lives -= 1
+                character.is_respawning = True
+                character.is_intangible = True
+                character.respawn_pos = self.pick_respawn_pos(character)
+                #Create death effect later
+
+
+                #TP to top of screen
+                character_center_x = character.respawn_pos[0]
+                character_center_y = character.respawn_pos[1] + 50
+                character.x = character_center_x - character.width//2
+                character.y = character_center_y - character.height//2
+
+                #Mention this line: without this, previous player velocity is still applied, potentially forcing characters to die as soon as they respawn by making them glide off-stage
+                character.vx = character.vy = 0
+
+                #repawning logic
+            if character.is_respawning:
+                if not character.grounded:
+                    character.y += min(10, character.respawn_pos[1] - character.y)
+
+                else:
+                    print(f"{character.name} has respawned!")
+                    character.is_respawning = False
+                    character.respawn_pos = None
+                    character.is_intangible = False
+
+
+
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
 
@@ -65,14 +102,16 @@ class Game:
                     character.intangible = False
             else:
                 if "dash" in self.inputs[character.name]:
-                    character.dash(self.inputs[character.name])
-                    if character.grounded:
-                        character.dash_delay = character.base_dash_delay
-                    else:
-                        character.dash_delay *= 1.5
+                    if not character.is_respawning:
+                        character.dash(self.inputs[character.name])
+                        if character.grounded:
+                            character.dash_delay = character.base_dash_delay
+                        else:
+                            character.dash_delay *= 1.5
                 else:
                     character.apply_gravity() #Moved here so gravity does not affect dashing speeds
-                    character.move(self.inputs[character.name])
+                    if not character.is_respawning:
+                        character.move(self.inputs[character.name])
 
             prev_x = character.x
             prev_y = character.y
@@ -113,3 +152,7 @@ class Game:
 
         self.inputs = []
         return None
+
+    def pick_respawn_pos(self, character):
+        spawn_platform = choice(self.platforms)
+        return (spawn_platform.x + spawn_platform.width//2, spawn_platform.y - spawn_platform.height - character.height - 60)

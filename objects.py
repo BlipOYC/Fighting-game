@@ -39,6 +39,8 @@ class Character:
         self.percent = 0
         self.lives = 3 #Default
         self.intangible = False
+        self.is_respawning = False
+        self.respawn_pos = None
 
         self.width = width
         self.height = height
