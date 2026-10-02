@@ -24,10 +24,10 @@ DEFAULT_KEYBINDS = {
 }
 
 ARROWS = {
-    "left": "←",
-    "up": "↑",
-    "right": "→",
-    "down": "↓",
+    "left": "LEFT",
+    "up": "UP",
+    "right": "DOWN",
+    "down": "RIGHT",
 }
 
 current_keybinds = DEFAULT_KEYBINDS.copy()
@@ -219,7 +219,7 @@ def calculate_character_positions(n_char, tot_char, screen_width):
     y = 120 + row * 80
     return (x, y)
 
-def create_key_positions(current_keybinds, screen_width):
+def create_key_positions(current_keybinds, screen_width, font, screen):
     column_positions = [
         (screen_width // 6) * 2,
         (screen_width // 6) * 3,
@@ -420,7 +420,7 @@ def run_menu(screen, clock, keybinds_file):
 
         elif substate == "keybinds":
             wip_rect = font.render("This page will be completed shortly!", True, (0, 0, 0))
-            create_key_positions(current_keybinds, info.current_w)
+            create_key_positions(current_keybinds, info.current_w, font, screen)
             screen.blit(wip_rect, wip_rect.get_rect(center=(400, 40)))
 
             if False: #Activate this whenever this key is selected to be changed by keybinds

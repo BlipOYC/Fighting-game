@@ -27,9 +27,9 @@ DEFAULT_KEYBINDS = {
         pygame.K_DOWN: "down",
         pygame.K_LEFT: "left",
         pygame.K_RIGHT: "right",
-        pygame.K_SLASH: "dash",
-        pygame.K_SEMICOLON: "attack",
-        pygame.K_QUOTE: "heavy"
+        pygame.K_j: "dash",
+        pygame.K_k: "attack",
+        pygame.K_l: "heavy"
     }
 }
 
@@ -38,12 +38,15 @@ platforms = maps["map1"]["platforms"]
 ground = maps["map1"]["ground"]
 
 #Functions
+"""Draws the players"""
 def draw_player(player):
     pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width, player.height])
 
+"""Draws the platforms"""
 def draw_platform(platform_to_draw):
     pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width, platform_to_draw.height])
 
+"""Uses both draw_platform and draw_player to create a screen"""
 def draw_game(players, platforms):
     #Fetch backgrounds
     screen.fill((255, 255, 255))
@@ -54,6 +57,7 @@ def draw_game(players, platforms):
     for character in players:
         draw_player(character)
 
+"""Creates or opens the keybind file"""
 def load_keybinds():
     if os.path.exists(KEYBINDS_FILE):
         try:
@@ -65,6 +69,7 @@ def load_keybinds():
             pass
     return DEFAULT_KEYBINDS.copy()
 
+"""Updates keybind file"""
 def save_keybinds(binds):
     with open(KEYBINDS_FILE, "w") as f:
         # Store as string names for readability
@@ -94,7 +99,6 @@ while running:
     if overstate == "menu":
 
         players = run_menu(screen, clock, KEYBINDS_FILE)
-
 
         if players is None:
             running = False

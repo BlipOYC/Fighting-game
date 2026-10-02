@@ -88,8 +88,6 @@ class Game:
                     character.respawn_pos = None
                     character.is_intangible = False
 
-
-
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
 
