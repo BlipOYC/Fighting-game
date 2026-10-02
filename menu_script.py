@@ -24,10 +24,10 @@ DEFAULT_KEYBINDS = {
 }
 
 ARROWS = {
-    "left": "LEFT",
-    "up": "UP",
-    "right": "DOWN",
-    "down": "RIGHT",
+    pygame.K_UP: "↑",
+    pygame.K_DOWN: "↓",
+    pygame.K_LEFT: "←",
+    pygame.K_RIGHT: "→"
 }
 
 current_keybinds = DEFAULT_KEYBINDS.copy()
@@ -251,7 +251,7 @@ def create_key_positions(current_keybinds, screen_width, font, screen):
                 else:
                     key = ARROWS[key]
                     #FIX IF HAVE TIME
-                    temp_font = pygame.font.Font("dejavusans", 40)
+                    temp_font = pygame.font.Font("liberationsans", 40)
                     key_rect = temp_font.render(key.upper(), True, (0, 0, 0))
                     screen.blit(key_rect, key_rect.get_rect(center=(column_positions[1], start_row + row_gap * idx)))
 
