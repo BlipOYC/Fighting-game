@@ -149,11 +149,16 @@ class Button:
 
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
+        mouse_clicked = pygame.mouse.get_pressed()[0]
+
+        shadow_rect = self.rect.move(0, 5)
+        pygame.draw.rect(screen, (10, 10, 15), shadow_rect, border_radius=10)
 
         if self.rect.collidepoint(mouse_pos):
             colour = (100, 100, 150)
         else:
             colour = (60, 60, 90)
+
 
         shadow_rect = self.rect.move(0, 5)
         pygame.draw.rect(screen, (10, 10, 15), shadow_rect, border_radius=10)
@@ -464,6 +469,9 @@ def run_pause(screen):
     text = font_small.render("Press ESC to resume", True, (255, 255, 255))
     text_rect = text.get_rect(topleft=(20, 100))
     screen.blit(text, text_rect)
+
+def run_end_fight(screen):
+    pass
 
 if __name__ == "__main__":
     pygame.init()
