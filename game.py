@@ -58,7 +58,7 @@ class Game:
             return "Tie"
 
         for character in self.characters:
-            #Add check for OOB
+            #Add check for Out Of Bounds
             character_center_x, character_center_y = character.x + character.width//2, character.y + character.height//2
             if not(self.game_zone[0][0] <= character_center_x <= self.game_zone[1][0] and self.game_zone[0][1] <= character_center_y <= self.game_zone[1][1]):
                 character.lives -= 1
@@ -99,9 +99,9 @@ class Game:
                     character.is_dashing = False
                     character.intangible = False
             else:
-                if "dash" in self.inputs[character.name]:
+                if "dash" in self.inputs[character.player]:
                     if not character.is_respawning:
-                        character.dash(self.inputs[character.name])
+                        character.dash(self.inputs[character.player])
                         if character.grounded:
                             character.dash_delay = character.base_dash_delay
                         else:
@@ -109,7 +109,7 @@ class Game:
                 else:
                     character.apply_gravity() #Moved here so gravity does not affect dashing speeds
                     if not character.is_respawning:
-                        character.move(self.inputs[character.name])
+                        character.move(self.inputs[character.player])
 
             prev_x = character.x
             prev_y = character.y

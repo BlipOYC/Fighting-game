@@ -386,7 +386,8 @@ def run_menu(screen, clock, keybinds_file):
                             char for char in character_list.values()
                             if char.name == chara2
                         )
-
+                        player1.set_player("1")
+                        player2.set_player("2")
                         return [player1, player2]
 
                 if return_button.clicked(event):
@@ -470,8 +471,27 @@ def run_pause(screen):
     text_rect = text.get_rect(topleft=(20, 100))
     screen.blit(text, text_rect)
 
-def run_end_fight(screen):
-    pass
+def run_end_fight(screen, player_win):
+    font = pygame.font.SysFont(None, 40)
+    running = True
+    if player_win != "Tie":
+        winner_text = font.render(f"PLAYER {player_win.player} WINS", True, (0, 0, 0))
+    else:
+        winner_text = font.render("The game ended in a tie!", True, (0, 0, 0))
+    winner_rect = winner_text.get_rect(center=(400, 40))
+    screen.blit(winner_text, winner_rect)
+
+    while running:
+        #Something with character animations
+
+        #Battle stats
+
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    running = False
+                    return True
+    return None
 
 if __name__ == "__main__":
     pygame.init()

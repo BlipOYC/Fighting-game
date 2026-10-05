@@ -29,6 +29,7 @@ class Archetype:
 
 class Character:
     def __init__(self, archetype, name, colour, heavies, x, y, width, height, gravity, ground_acceleration, air_acceleration, grounded_max_move_speed, air_max_move_speed, jump_force, max_air_jumps, jump_delay, dash_delay):
+        self.player = None #Temp
         self.archetype = archetype
         self.name = name
         self.colour = colour
@@ -69,6 +70,8 @@ class Character:
 
         self.is_dashing = False
 
+    def set_player(self, player):
+        self.player = player
 
     def change_facing(self):
         if self.vx < 0:

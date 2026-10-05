@@ -1,7 +1,8 @@
 import pygame, sys, os, json
 from game import Game
 from game_objects_list import character_list, maps
-from menu_script import run_menu, run_pause
+from menu_script import run_menu, run_pause, run_end_fight
+
 #Check out SPINE (engine)
 
 name_list = [character.name for character in character_list.values()]
@@ -156,8 +157,10 @@ while running:
         run_pause(screen)
 
     elif overstate == "end_fight":
+        print("end_fight")
         #Make an actual menu for this in the menu_script
-        overstate = "menu"
+        if run_end_fight(screen, state):
+            overstate = "menu"
 
         pygame.display.flip()
 
