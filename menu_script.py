@@ -266,6 +266,11 @@ def create_key_positions(current_keybinds, screen_width, font, screen):
                 screen.blit(key_rect, key_rect.get_rect(center=(column_positions[2], start_row + row_gap * idx)))
 
 
+def run_title_screen(screen):
+    running = True
+    while running:
+        screen.fill((50, 50, 50))
+
 
 # noinspection PyInconsistentReturns
 # Which for some reason is needed cuz pycharm is fussy
@@ -471,6 +476,8 @@ def run_pause(screen):
     text_rect = text.get_rect(topleft=(20, 100))
     screen.blit(text, text_rect)
 
+    pygame.display.flip()
+
 def run_end_fight(screen, player_win):
     font = pygame.font.SysFont(None, 40)
     running = True
@@ -478,19 +485,27 @@ def run_end_fight(screen, player_win):
         winner_text = font.render(f"PLAYER {player_win.player} WINS", True, (0, 0, 0))
     else:
         winner_text = font.render("The game ended in a tie!", True, (0, 0, 0))
-    winner_rect = winner_text.get_rect(center=(400, 40))
-    screen.blit(winner_text, winner_rect)
 
     while running:
+        #Replace this with the background/animations
+        screen.fill((200, 200, 200))
+
+        winner_rect = winner_text.get_rect(center=(400, 40))
+        screen.blit(winner_text, winner_rect)
+        pygame.display.flip()
+
         #Something with character animations
 
         #Battle stats
 
         for event in pygame.event.get():
+            if event == pygame.QUIT:
+                running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     running = False
                     return True
+
     return None
 
 if __name__ == "__main__":
@@ -503,3 +518,4 @@ if __name__ == "__main__":
     substate = "main_menu"
 
     print(run_menu(screen, clock, keybinds_file="keybinds.json"))
+

@@ -1,7 +1,7 @@
 import pygame, sys, os, json
 from game import Game
 from game_objects_list import character_list, maps
-from menu_script import run_menu, run_pause, run_end_fight
+from menu_script import run_title_screen, run_menu, run_pause, run_end_fight
 
 #Check out SPINE (engine)
 
@@ -88,14 +88,25 @@ clock = pygame.time.Clock()
 delta_time = clock.tick(60)/1000
 running = True
 state = None
-overstate = "menu"
+overstate = "title_screen"
 
 
 #Camera stuffs
 camera_mode = "Fixed"
 
 while running:
+
     clock.tick(60)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+    if overstate == "title_screen":
+        run_title_screen(screen)
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                overstate = "menu"
 
     if overstate == "menu":
 
@@ -109,6 +120,7 @@ while running:
         print("P2:", players[1], players[1].name)
 
         game = Game(platforms, players)
+        state = None
 
         overstate = "game"
 
@@ -140,9 +152,9 @@ while running:
             draw_game(players, platforms)
 
         else:
+
             overstate = "end_fight"
 
-        pygame.display.flip()
 
     elif overstate == "pause":
         for event in pygame.event.get():
@@ -155,6 +167,7 @@ while running:
 
         draw_game(players, platforms)
         run_pause(screen)
+        pygame.display.flip()
 
     elif overstate == "end_fight":
         print("end_fight")
@@ -162,7 +175,7 @@ while running:
         if run_end_fight(screen, state):
             overstate = "menu"
 
-        pygame.display.flip()
+    pygame.display.flip()
 
 
     #    print(character_list["chara1"].x, character_list["chara1"].y, character_list["chara1"].vx, character_list["chara1"].vy)
