@@ -2,6 +2,7 @@ import pygame, sys, os, json
 from game import Game
 from game_objects_list import character_list, maps
 from menu_script import run_title_screen, run_menu, run_pause, run_end_fight
+from camera import Camera
 
 #Check out SPINE (engine)
 
@@ -103,7 +104,9 @@ while running:
             running = False
 
     if overstate == "title_screen":
-        run_title_screen(screen)
+        overstate = "menu"
+        pass
+        #run_title_screen(screen)
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 overstate = "menu"
@@ -120,6 +123,7 @@ while running:
         print("P2:", players[1], players[1].name)
 
         game = Game(platforms, players)
+        game_camera = Camera(400, 300, 1)
         state = None
 
         overstate = "game"
@@ -129,6 +133,8 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:
@@ -160,6 +166,8 @@ while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:

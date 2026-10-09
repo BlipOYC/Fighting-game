@@ -1,4 +1,7 @@
 #+Maps and keybinds if we have time
+#V important mention: allows duplicate characters and non-permanent characters when a new round starts
+import copy
+
 import pygame, os, sys, json
 from game_objects_list import character_list
 
@@ -382,15 +385,20 @@ def run_menu(screen, clock, keybinds_file):
                         #FIND OUT WHICH CHARACTERS ARE SELECTED
                         chara1 = character_boxes[p1pos-1].text
                         chara2 = character_boxes[p2pos-1].text
-                        player1 = next(
-                            char for char in character_list.values()
-                            if char.name == chara1
+                        player1 = copy.deepcopy(
+                            next(
+                                char for char in character_list.values()
+                                if char.name == chara1
+                            )
                         )
 
-                        player2 = next(
-                            char for char in character_list.values()
-                            if char.name == chara2
+                        player2 = copy.deepcopy(
+                            next(
+                                char for char in character_list.values()
+                                if char.name == chara2
+                            )
                         )
+
                         player1.set_player("1")
                         player2.set_player("2")
                         return [player1, player2]
@@ -501,6 +509,9 @@ def run_end_fight(screen, player_win):
         for event in pygame.event.get():
             if event == pygame.QUIT:
                 running = False
+                pygame.quit()
+                sys.exit()
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     running = False

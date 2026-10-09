@@ -1,6 +1,9 @@
 import pygame
 from random import choice
 
+from objects import Character
+
+
 def overlap(range1, range2):
     start1, end1 = range1
     start2, end2 = range2
@@ -26,11 +29,31 @@ class Game:
     def __init__(self, platforms, characters):
         self.platforms = platforms
         self.characters = characters
-        self.game_zone = [ #Let's keep them on screen first
-            (0, 0),
-            (800, 600),
+
+        for character in self.characters:
+            #In here, also set player colours to be different two players play the same character
+
+            character.reset_character_lives()
+
+
+        self.game_stats = { #Add more ONLY if I have time
+            "Player One": {
+                "Damage Dealt": 0,
+                "Damage Taken": 0,
+                "Knockouts": [], #List of characters KO'd
+            },
+            "Player Two": {
+                "Damage Dealt": 0,
+                "Damage Taken": 0,
+                "Knockouts": [],
+            }
+        }
+        self.game_zone = [ #Defined blast zones
+            (-200, -200),
+            (1000, 800),
         ]
         self.inputs = {}
+
 
     def check_grounded(self):
         for character in self.characters:
@@ -154,3 +177,6 @@ class Game:
     def pick_respawn_pos(self, character):
         spawn_platform = choice(self.platforms)
         return (spawn_platform.x + spawn_platform.width//2, spawn_platform.y - spawn_platform.height - character.height - 60)
+
+    def update_game_stats(self):
+        pass

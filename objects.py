@@ -70,8 +70,16 @@ class Character:
 
         self.is_dashing = False
 
+
     def set_player(self, player):
         self.player = player
+
+    def set_colour(self, colour):
+        self.colour = colour
+
+    def reset_character_lives(self):
+        self.lives = 3
+        self.is_respawning = False
 
     def change_facing(self):
         if self.vx < 0:
