@@ -7,6 +7,13 @@ class Camera:
         self.zoom = zoom
         self.mode = "fixed"
 
+    def world_to_screen(self, x, y, screen):
+        """Translate to on-screen coords"""
+        screen_x = (x - self.centre_x) * self.zoom + screen.get_width() / 2
+        screen_y = (y - self.centre_y) * self.zoom + screen.get_height() / 2
+
+        return screen_x, screen_y
+
     #These three in case of sudden update needed
     def update_centre(self, x, y):
         self.centre_x = x
@@ -31,28 +38,54 @@ class Camera:
 
     def draw_fixed(self, characters, platforms, screen):
         for character in characters:
-            draw_player(character, screen)
+            x, y = self.world_to_screen(
+                character.x, character.y, screen
+            )
+            draw_player(character, screen, x, y, self.zoom)
+
         for platform in platforms:
-            draw_platform(platform, screen)
-        pass
+            x, y = self.world_to_screen(
+                platform.x, platform.y, screen
+            )
+            draw_platform(platform, screen, x, y, self.zoom)
 
     def draw_dynamic(self, characters, platforms, screen):
         #Leave for last
-        pass
+        if not self.characters:
+            self.draw_fixed(self, characters, platforms, screen)
+            return
+
+        #Calculate target for camera
+        target_x = sum(character.x for character in characters) / len(characters)
+        target_y = sum(character.y for character in characters) / len(characters)
+
+        smoothing = 0.1
+
+        #Hopefully smooth glide?
+
+        self.centre_x += (target_x - self.centre_x) * smoothing
+        self.centre_y += (target_y - self.centre_y) * smoothing
+
+        self.draw_fixed(characters, platforms, screen)
 
     def draw_centered(self, characters, platforms, screen):
-        center_x = sum(character.x for character in characters)/len(characters)
-        center_y = sum(character.y for character in characters)/len(characters)
+        if not self.characters:
+            self.draw_fixed(characters, platforms, screen)
+            return
 
-        pass
+        self.center_x = sum(character.x for character in characters)/len(characters)
+        self.center_y = sum(character.y for character in characters)/len(characters)
+
+        self.draw_fixed(characters, platforms, screen)
+        #Add an updating zoom feature somewhere
 
 
-def draw_player(player, screen):
-    pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width, player.height])
+def draw_player(player, screen, zoom):
+    pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width * zoom, player.height * zoom])
 
 """Draws the platforms"""
-def draw_platform(platform_to_draw, screen):
-    pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width, platform_to_draw.height])
+def draw_platform(platform_to_draw, screen, zoom):
+    pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width * zoom, platform_to_draw.height * zoom])
 
 """Uses both draw_platform and draw_player to create a screen"""
 def draw_game(players, platforms, screen):
