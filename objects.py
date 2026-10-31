@@ -70,6 +70,9 @@ class Character:
 
         self.is_dashing = False
 
+        # Property must change when adding animation
+        # Modification in the movement zone
+        self.current_animation = None
 
     def set_player(self, player):
         self.player = player

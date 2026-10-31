@@ -469,6 +469,7 @@ def run_menu(screen, clock, keybinds_file):
         clock.tick(60)
 
 def run_pause(screen):
+    #ADD A CHANGE CAMERA MODE
     overlay = pygame.Surface((800, 600))
     overlay.set_alpha(150)  # Affects transparency from 0-255
     overlay.fill((0, 0, 0))
@@ -482,7 +483,7 @@ def run_pause(screen):
     font_small = pygame.font.Font(None, 36)
     text = font_small.render("Press ESC to resume", True, (255, 255, 255))
     text_rect = text.get_rect(topleft=(20, 100))
-    screen.blit(text, text_rect)
+    screen.blit(text, text_rect
 
     pygame.display.flip()
 

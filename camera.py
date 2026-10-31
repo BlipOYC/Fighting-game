@@ -81,6 +81,7 @@ class Camera:
 
 
 def draw_player(player, screen, zoom):
+    #Edit this with respect to current animation
     pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width * zoom, player.height * zoom])
 
 """Draws the platforms"""
