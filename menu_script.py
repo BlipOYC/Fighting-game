@@ -154,6 +154,18 @@ class Button:
     def draw(self, screen):
         mouse_pos = pygame.mouse.get_pos()
         mouse_clicked = pygame.mouse.get_pressed()[0]
+        text = self.font.render(self.text, True, (255, 255, 255))
+
+        if self.rect.collidepoint(mouse_pos):
+            text = font.render(self.text, True, (140,140,140))
+
+        screen.blit(text, self.rect.center)
+
+class MenuButton(Button):
+
+    def draw(self, screen):
+        mouse_pos = pygame.mouse.get_pos()
+        mouse_clicked = pygame.mouse.get_pressed()[0]
 
         shadow_rect = self.rect.move(0, 5)
         pygame.draw.rect(screen, (10, 10, 15), shadow_rect, border_radius=10)
@@ -314,11 +326,11 @@ def run_menu(screen, clock, keybinds_file):
     while running:
         screen.fill((200, 200, 200))
 
-        start_button = Button((0, 0, 200, 50), (400, 120), "START GAME", font)
-        settings_button = Button((0, 0, 200, 50), (400, 300), "SETTINGS", font)
-        quit_button = Button((0, 0, 200, 50), (400, 540), "QUIT", font)
-        keybinds_button = Button((0, 0, 200, 50), (400, 300), "KEYBINDS", font)
-        return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
+        start_button = MenuButton((0, 0, 200, 50), (400, 120), "START GAME", font)
+        settings_button = MenuButton((0, 0, 200, 50), (400, 300), "SETTINGS", font)
+        quit_button = MenuButton((0, 0, 200, 50), (400, 540), "QUIT", font)
+        keybinds_button = MenuButton((0, 0, 200, 50), (400, 300), "KEYBINDS", font)
+        return_button = MenuButton((0, 0, 200, 50), (400, 540), "RETURN", font)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -462,7 +474,7 @@ def run_menu(screen, clock, keybinds_file):
                          p1=(p1pos==idx+1),
                          p2=(p2pos==idx+1)
                          )
-            return_button = Button((0, 0, 200, 50), (400, 540), "RETURN", font)
+            return_button = MenuButton((0, 0, 200, 50), (400, 540), "RETURN", font)
             return_button.draw(screen)
 
 
@@ -470,24 +482,6 @@ def run_menu(screen, clock, keybinds_file):
         clock.tick(60)
 
 def run_pause(screen, camera):
-    #ADD A CHANGE CAMERA MODE
-    overlay = pygame.Surface((800, 600))
-    overlay.set_alpha(150)  # Affects transparency from 0-255
-    overlay.fill((0, 0, 0))
-    screen.blit(overlay, (0, 0))
-
-    paused_font = pygame.font.SysFont(None, 72)
-    text = paused_font.render("PAUSED", True, (255, 255, 255))
-    text_rect = text.get_rect(topleft=(20, 20))
-    screen.blit(text, text_rect)
-
-    font_small = pygame.font.Font(None, 36)
-    text = font_small.render("Press ESC to resume", True, (255, 255, 255))
-    text_rect = text.get_rect(topleft=(20, 100))
-    screen.blit(text, text_rect)
-
-    """
-    Use later
     match camera.mode:
         case "fixed":
             idx = 0
@@ -497,11 +491,31 @@ def run_pause(screen, camera):
             idx = 2
         case _:
             idx = 0
-    
-    text = camera_modes[idx]
-    """
 
-    pygame.display.flip()
+
+    running = True
+
+    while running:
+        #ADD A CHANGE CAMERA MODE
+        overlay = pygame.Surface((800, 600))
+        overlay.set_alpha(150)  # Affects transparency from 0-255
+        overlay.fill((0, 0, 0))
+        screen.blit(overlay, (0, 0))
+
+        paused_font = pygame.font.SysFont(None, 72)
+        pause = paused_font.render("PAUSED", True, (255, 255, 255))
+        pause_rect = pause.get_rect(topleft=(20, 20))
+        screen.blit(pause, pause_rect)
+
+        font_small = pygame.font.Font(None, 36)
+        esc_text = font_small.render("Press ESC to resume", True, (255, 255, 255))
+        esc_text_rect = esc_text.get_rect(topleft=(20, 100))
+        screen.blit(esc_text, esc_text_rect)
+
+        camera_mode_toggle = Button(pygame.Rect(), (20, 180), camera_modes[idx], font_small)
+        camera_mode_toggle.draw(screen)
+
+        pygame.display.flip()
 
 def run_end_fight(screen, player_win):
     font = pygame.font.SysFont(None, 40)

@@ -149,8 +149,10 @@ while running:
             "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
         }
 
-        #if pressed_keys["1"] or pressed_keys["2"]:
-        #    print(pressed_keys)
+        if all_keys[pygame.K_ESCAPE]:
+            overstate = "pause"
+            continue
+
 
         state = game.update_positions(pressed_keys)
 
@@ -178,8 +180,9 @@ while running:
                 if event.key == pygame.K_ESCAPE:
                     overstate = "game"
 
-        draw_game(players, platforms)
-        run_pause(screen)
+        game_camera.match_draw(players, platforms, screen)
+
+        run_pause(screen, game_camera)
         pygame.display.flip()
 
     elif overstate == "end_fight":
