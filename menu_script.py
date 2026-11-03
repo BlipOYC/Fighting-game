@@ -4,7 +4,7 @@ import copy
 
 import pygame, os, sys, json
 from game_objects_list import character_list
-from camera import Camera
+
 
 DEFAULT_KEYBINDS = {
     "1": {
@@ -469,7 +469,7 @@ def run_menu(screen, clock, keybinds_file):
         pygame.display.flip()
         clock.tick(60)
 
-def run_pause(screen):
+def run_pause(screen, camera):
     #ADD A CHANGE CAMERA MODE
     overlay = pygame.Surface((800, 600))
     overlay.set_alpha(150)  # Affects transparency from 0-255
@@ -486,7 +486,20 @@ def run_pause(screen):
     text_rect = text.get_rect(topleft=(20, 100))
     screen.blit(text, text_rect)
 
-
+    """
+    Use later
+    match camera.mode:
+        case "fixed":
+            idx = 0
+        case "center":
+            idx = 1
+        case "dynamic":
+            idx = 2
+        case _:
+            idx = 0
+    
+    text = camera_modes[idx]
+    """
 
     pygame.display.flip()
 

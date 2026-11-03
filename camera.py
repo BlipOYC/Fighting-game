@@ -5,7 +5,7 @@ class Camera:
         self.centre_x = centre_x
         self.centre_y = centre_y
         self.zoom = zoom
-        self.mode = "fixed"
+        self.mode = mode.lower()
 
     def world_to_screen(self, x, y, screen):
         """Translate to on-screen coords"""
