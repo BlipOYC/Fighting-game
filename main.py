@@ -13,7 +13,7 @@ state = "menu"
 KEYBINDS_FILE = "keybinds.json" #Make this later
 
 #Default Keybinds:
-#MODIFY CODE SO THAT THIS WILL WORK REGARDLESS OF CHARACTER NAME
+
 DEFAULT_KEYBINDS = {
     "1": {
         pygame.K_w: "up",
@@ -94,6 +94,7 @@ overstate = "title_screen"
 
 #Camera stuffs
 camera_mode = "Fixed"
+game_camera = Camera(400, 300, 1, camera_mode)
 
 while running:
 
@@ -123,7 +124,7 @@ while running:
         print("P2:", players[1], players[1].name)
 
         game = Game(platforms, players)
-        game_camera = Camera(400, 300, 1)
+        game_camera = Camera(400, 300, 1, camera_mode)
         state = None
 
         overstate = "game"
@@ -155,11 +156,13 @@ while running:
 
         if state is None:
 
-            draw_game(players, platforms)
+            game_camera.match_draw(players, platforms, screen)
 
         else:
 
             overstate = "end_fight"
+
+        pygame.display.flip()
 
 
     elif overstate == "pause":

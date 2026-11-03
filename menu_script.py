@@ -483,7 +483,7 @@ def run_pause(screen):
     font_small = pygame.font.Font(None, 36)
     text = font_small.render("Press ESC to resume", True, (255, 255, 255))
     text_rect = text.get_rect(topleft=(20, 100))
-    screen.blit(text, text_rect
+    screen.blit(text, text_rect)
 
     pygame.display.flip()
 

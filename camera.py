@@ -1,7 +1,7 @@
 import pygame
 
 class Camera:
-    def __init__(self, centre_x, centre_y, zoom):
+    def __init__(self, centre_x, centre_y, zoom, mode):
         self.centre_x = centre_x
         self.centre_y = centre_y
         self.zoom = zoom
@@ -80,13 +80,14 @@ class Camera:
         #Add an updating zoom feature somewhere
 
 
-def draw_player(player, screen, zoom):
+def draw_player(player, screen, x, y, zoom):
     #Edit this with respect to current animation
-    pygame.draw.rect(screen, player.colour, [player.x, player.y, player.width * zoom, player.height * zoom])
+
+    pygame.draw.rect(screen, player.colour, [x, y, player.width * zoom, player.height * zoom])
 
 """Draws the platforms"""
-def draw_platform(platform_to_draw, screen, zoom):
-    pygame.draw.rect(screen, (0,0, 0), [platform_to_draw.x, platform_to_draw.y, platform_to_draw.width * zoom, platform_to_draw.height * zoom])
+def draw_platform(platform_to_draw, screen, x, y, zoom):
+    pygame.draw.rect(screen, (0,0, 0), [x, y, platform_to_draw.width * zoom, platform_to_draw.height * zoom])
 
 """Uses both draw_platform and draw_player to create a screen"""
 def draw_game(players, platforms, screen):
@@ -98,3 +99,5 @@ def draw_game(players, platforms, screen):
 
     for character in players:
         draw_player(character)
+
+    pygame.display.flip()
