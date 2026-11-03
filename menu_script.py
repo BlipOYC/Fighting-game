@@ -4,6 +4,7 @@ import copy
 
 import pygame, os, sys, json
 from game_objects_list import character_list
+from camera import Camera
 
 DEFAULT_KEYBINDS = {
     "1": {
@@ -34,7 +35,7 @@ ARROWS = {
 }
 
 current_keybinds = DEFAULT_KEYBINDS.copy()
-
+camera_modes = ["FIX", "CEN", "DYN"]
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 #keybind_file = "keybinds.json"
@@ -484,6 +485,8 @@ def run_pause(screen):
     text = font_small.render("Press ESC to resume", True, (255, 255, 255))
     text_rect = text.get_rect(topleft=(20, 100))
     screen.blit(text, text_rect)
+
+
 
     pygame.display.flip()
 
