@@ -157,6 +157,7 @@ while running:
         if state is None:
 
             screen.fill((255, 255, 255))
+            #Mention fix here
             game_camera.match_draw(players, platforms, screen)
 
         else:
