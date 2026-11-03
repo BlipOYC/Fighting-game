@@ -1,2 +1,2 @@
-Fighting Game for Comp Sci Project
+Fighting Game for Comp Sci Project\n
 Run main.py to start the project
