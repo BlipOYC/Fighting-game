@@ -149,6 +149,11 @@ while running:
             "2": [keybinds["2"][k] for k in keybinds["2"] if all_keys[k]]
         }
 
+
+        if all_keys[pygame.K_ESCAPE]:
+            overstate = "pause"
+            continue
+
         state = game.update_positions(pressed_keys)
 
         if state is None:

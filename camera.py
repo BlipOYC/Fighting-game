@@ -75,7 +75,7 @@ class Camera:
         self.draw_fixed(characters, platforms, screen)
 
     def draw_centered(self, characters, platforms, screen):
-        if not self.characters:
+        if not characters:
             self.draw_fixed(characters, platforms, screen)
             return
 
