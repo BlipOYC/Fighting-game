@@ -5,6 +5,7 @@ class Camera:
         self.centre_x = centre_x
         self.centre_y = centre_y
         self.zoom = zoom
+        self.target_zoom = zoom
         self.mode = mode.lower()
 
     def world_to_screen(self, x, y, screen):
@@ -26,6 +27,11 @@ class Camera:
         self.mode = mode
 
     def match_draw(self, characters, platforms, screen):
+        if self.zoom > self.target_zoom:
+            self.zoom -= min(0.2, self.zoom - self.target_zoom)
+        elif self.zoom < self.target_zoom:
+            self.zoom += min(0.2, self.target_zoom - self.zoom)
+
         match self.mode:
             case "fixed":
                 self.draw_fixed(characters, platforms, screen)
@@ -51,7 +57,7 @@ class Camera:
 
     def draw_dynamic(self, characters, platforms, screen):
         #Leave for last
-        if not self.characters:
+        if not characters:
             self.draw_fixed(self, characters, platforms, screen)
             return
 

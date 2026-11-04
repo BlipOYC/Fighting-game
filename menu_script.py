@@ -35,7 +35,8 @@ ARROWS = {
 }
 
 current_keybinds = DEFAULT_KEYBINDS.copy()
-camera_modes = ["FIX", "CEN", "DYN"]
+camera_modes_toggle = ["FIX", "CEN", "DYN"]
+camera_modes_proper = ["fixed", "center", "dynamic"]
 
 #We will want to do keybinds using a json file that can be accessed by all modules, so that the main module and the menu module can edit the keybinds.
 #keybind_file = "keybinds.json"
@@ -161,6 +162,13 @@ class Button:
 
         screen.blit(text, self.rect.center)
 
+    def clicked(self, event):
+        return (
+            event.type == pygame.MOUSEBUTTONDOWN
+            and event.button == 1
+            and self.rect.collidepoint(event.pos)
+        )
+
 class MenuButton(Button):
 
     def draw(self, screen):
@@ -185,13 +193,6 @@ class MenuButton(Button):
         text_rect = text_surface.get_rect(center=self.rect.center)
 
         screen.blit(text_surface, text_rect)
-
-    def clicked(self, event):
-        return (
-            event.type == pygame.MOUSEBUTTONDOWN
-            and event.button == 1
-            and self.rect.collidepoint(event.pos)
-        )
 
 def menu_load_keybinds(keybinds_file):
     if os.path.exists(keybinds_file):
@@ -480,7 +481,7 @@ def run_menu(screen, clock, keybinds_file):
 
         pygame.display.flip()
         clock.tick(60)
-#aa
+
 def run_pause(screen, camera):
     match camera.mode:
         case "fixed":
@@ -494,6 +495,7 @@ def run_pause(screen, camera):
 
 
     running = True
+    escape_flag = False
 
     while running:
         #ADD A CHANGE CAMERA MODE
@@ -512,10 +514,28 @@ def run_pause(screen, camera):
         esc_text_rect = esc_text.get_rect(topleft=(20, 100))
         screen.blit(esc_text, esc_text_rect)
 
-        camera_mode_toggle = Button(pygame.Rect(), (20, 180), camera_modes[idx], font_small)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                idx += 1
+                idx %= 3
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    escape_flag = True
+                    break
+
+        camera_mode_toggle = Button(pygame.Rect(), (20, 180), camera_modes_toggle[idx], font_small)
         camera_mode_toggle.draw(screen)
 
         pygame.display.flip()
+        if escape_flag:
+            camera.update_mode(camera_modes_proper[idx])
+            break
+
+    return "game"
 
 def run_end_fight(screen, player_win):
     font = pygame.font.SysFont(None, 40)
