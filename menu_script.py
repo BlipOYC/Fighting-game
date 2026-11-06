@@ -482,7 +482,7 @@ def run_menu(screen, clock, keybinds_file):
         pygame.display.flip()
         clock.tick(60)
 
-def run_pause(screen, camera):
+def run_pause(screen, camera, players, platforms):
     match camera.mode:
         case "fixed":
             idx = 0
@@ -493,15 +493,15 @@ def run_pause(screen, camera):
         case _:
             idx = 0
 
-
     running = True
     escape_flag = False
 
     while running:
         #ADD A CHANGE CAMERA MODE
+        camera.match_draw(players, platforms, screen)
         overlay = pygame.Surface((800, 600))
         overlay.set_alpha(150)  # Affects transparency from 0-255
-        overlay.fill((0, 0, 0))
+        overlay.fill((150, 150, 150))
         screen.blit(overlay, (0, 0))
 
         paused_font = pygame.font.SysFont(None, 72)

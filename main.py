@@ -99,16 +99,16 @@ game_camera = Camera(400, 300, 1, camera_mode)
 while running:
 
     clock.tick(60)
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+    events = pygame.event.get()
+    # for event in events():
+    #     if event.type == pygame.QUIT:
+    #         running = False
 
     if overstate == "title_screen":
         overstate = "menu"
         pass
         #run_title_screen(screen)
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.KEYDOWN:
                 overstate = "menu"
 
@@ -130,8 +130,7 @@ while running:
         overstate = "game"
 
     elif overstate == "game":
-
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
@@ -150,10 +149,6 @@ while running:
         }
 
 
-        if all_keys[pygame.K_ESCAPE]:
-            overstate = "pause"
-            continue
-
         state = game.update_positions(pressed_keys)
 
         if state is None:
@@ -170,7 +165,7 @@ while running:
 
 
     elif overstate == "pause":
-        for event in pygame.event.get():
+        for event in events:
             if event.type == pygame.QUIT:
                 running = False
                 pygame.quit()
@@ -182,7 +177,7 @@ while running:
 
         game_camera.match_draw(players, platforms, screen)
 
-        overstate = run_pause(screen, game_camera)
+        overstate = run_pause(screen, game_camera, players, platforms)
         pygame.display.flip()
 
     elif overstate == "end_fight":

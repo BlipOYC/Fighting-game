@@ -2,11 +2,15 @@ import pygame
 
 class Camera:
     def __init__(self, centre_x, centre_y, zoom, mode):
-        self.centre_x = centre_x
-        self.centre_y = centre_y
+        self.base_centre_x = centre_x
+        self.base_centre_y = centre_y
+        self.centre_x = int(centre_x)
+        self.centre_y = int(centre_y)
         self.zoom = zoom
         self.target_zoom = zoom
         self.mode = mode.lower()
+
+        print(self.base_centre_x is self.centre_x and self.base_centre_y is self.centre_y)
 
     def world_to_screen(self, x, y, screen):
         """Translate to on-screen coords"""
@@ -34,6 +38,8 @@ class Camera:
 
         match self.mode:
             case "fixed":
+                self.centre_x = self.base_centre_x
+                self.centre_y = self.base_centre_y
                 self.draw_fixed(characters, platforms, screen)
             case "dynamic":
                 self.draw_dynamic(characters, platforms, screen)
@@ -55,17 +61,18 @@ class Camera:
             )
             draw_platform(platform, screen, x, y, self.zoom)
 
-    def draw_dynamic(self, characters, platforms, screen):
+    def draw_dynamic(self, characters, platforms, screen, target_x = None, target_y = None):
         #Leave for last
         if not characters:
             self.draw_fixed(self, characters, platforms, screen)
             return
 
         #Calculate target for camera
-        target_x = sum(character.x for character in characters) / len(characters)
-        target_y = sum(character.y for character in characters) / len(characters)
+        if target_x is None and target_y is None:
+            target_x = sum(character.x for character in characters) / len(characters)
+            target_y = sum(character.y for character in characters) / len(characters)
 
-        smoothing = 0.1
+        smoothing = 0.05
 
         #Hopefully smooth glide?
 
@@ -106,3 +113,6 @@ def draw_game(players, platforms, screen):
         draw_player(character)
 
     pygame.display.flip()
+
+if __name__ == "__main__":
+    dummy_cam = Camera(400, 600, 1, "fixed")
