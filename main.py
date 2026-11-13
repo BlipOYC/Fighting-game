@@ -181,7 +181,6 @@ while running:
         pygame.display.flip()
 
     elif overstate == "end_fight":
-        print("end_fight")
         #Make an actual menu for this in the menu_script
         if run_end_fight(screen, state):
             overstate = "menu"

@@ -1,0 +1,2 @@
+import make_move_list
+make_move_list.create_files()

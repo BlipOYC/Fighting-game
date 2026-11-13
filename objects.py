@@ -42,6 +42,8 @@ class Character:
         self.intangible = False
         self.is_respawning = False
         self.respawn_pos = None
+        self.in_hitstun = False
+        self.hitstun_timer = 0
 
         self.width = width
         self.height = height
@@ -267,7 +269,7 @@ class Attack:
 
 
 class Hitbox:
-    def __init__(self, x, y, width, height, active_frames, damage, force, direction, facing, priority=0, fixed_force=False):
+    def __init__(self, x, y, width, height, active_frames, damage, force, direction, facing, hitstun, priority=0, fixed_force=False):
         self.x = x
         self.y = y
         self.width = width
@@ -277,6 +279,7 @@ class Hitbox:
         self.force = force
         self.direction = direction #degrees
         self.facing = facing
+        self.hitstun = hitstun
         self.priority = priority
         self.fixed_force = fixed_force
 

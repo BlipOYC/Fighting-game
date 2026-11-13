@@ -86,8 +86,8 @@ class Camera:
             self.draw_fixed(characters, platforms, screen)
             return
 
-        self.center_x = sum(character.x for character in characters)/len(characters)
-        self.center_y = sum(character.y for character in characters)/len(characters)
+        self.centre_x = sum(character.x for character in characters)/len(characters)
+        self.centre_y = sum(character.y for character in characters)/len(characters)
 
         self.draw_fixed(characters, platforms, screen)
         #Add an updating zoom feature somewhere

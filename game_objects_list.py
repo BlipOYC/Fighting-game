@@ -1,14 +1,26 @@
+from json import JSONDecodeError
+
+import manual_move_list_reset
 from objects import Archetype, Character, Platform, Ground, Attack, Hitbox
+import json
 import get_move_list
 move_list = []
 for file in ["brawlers_moves.json", "rushdown_moves.json", "zoners_moves.json"]:
     #MUST UN-JSON LATER
-    opened_file = open(file, "r")
-    move_list.append(opened_file.read())
+    with open(file) as json_file:
+        move_list.append(json.load(json_file))
 
 def convert_to_attack(*params):
     try:
-        return Attack(*params)
+        associated_hitboxes = []
+        for hitbox in params:
+            try:
+                associated_hitboxes.append(Hitbox(*hitbox))
+            except ValueError, AttributeError, KeyError:
+                pass
+            except JSONDecodeError:
+                raise Exception("JSON format error: try rebooting the game or restoring the move list to its default state if modded")
+        return Attack(associated_hitboxes)
     except AttributeError:
         raise Exception("PARAMETERS MISSING")
 
@@ -25,7 +37,7 @@ moves = {
         "dAir": move_list,
     },
     "Brawler": {
-        "nLight": move_list,
+        "nLight": convert_to_attack(move_list[0]["nLight"]),
         "fLight": move_list,
         "dLight": move_list,
         "grab": move_list,

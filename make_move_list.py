@@ -12,7 +12,7 @@ rushdowns = {
 }
 
 brawlers = {
-    "nLight": (),
+    "nLight": ((20, 20, 20, 20, [4, 10], 10, 10, 0, "forward", 4, 0, False)),
     "fLight": (),
     "dLight": (),
     "grab": (),
