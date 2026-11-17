@@ -86,7 +86,7 @@ class Character:
         self.lives = 3
         self.is_respawning = False
 
-    def change_facing(self):
+    def update_facing(self):
         if self.vx < 0:
             self.facing = "left"
         elif self.vx > 0:
@@ -162,6 +162,7 @@ class Character:
 
         if 'up' in directions:
             if self.can_jump:
+                self.update_facing()
                 self.jump()
         else:
             self.can_jump = True
@@ -191,7 +192,8 @@ class Character:
         if self.vx < -max_speed:
             self.vx = -max_speed
 
-        self.change_facing()
+        if self.grounded:
+            self.update_facing()
 
     def attack(self, inputs):
         if "attack" in inputs:
@@ -224,8 +226,8 @@ class Character:
                     #Add a ground pound
         return None
 
-    def execute(self, character_changes):
-        pass
+    def execute(self, move_name):
+        print(self.moveset)
 
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])

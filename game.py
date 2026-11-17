@@ -72,6 +72,7 @@ class Game:
     def update_positions(self, inputs):
         self.take_inputs(inputs)
 
+
         p1, p2 = self.characters[0], self.characters[1]
         if p1.is_alive() and not p2.is_alive():
             return p1
@@ -110,6 +111,39 @@ class Game:
                     character.is_respawning = False
                     character.respawn_pos = None
                     character.is_intangible = False
+
+            #Add attack logic
+            #This must override both dashing and attacking
+            if "attack" in self.inputs[character.player]:
+                if not character.is_respawning:
+                    #Grounded moves
+                    if character.grounded:
+                        if "up" in self.inputs[character.player]:
+                            character.execute("uLight")
+                        elif "down" in self.inputs[character.player]:
+                            character.execute("dLight")
+                        elif "right" in self.inputs[character.player]:
+                            character.facing = "right"
+                            character.execute("fLight")
+                        elif "left" in self.inputs[character.player]:
+                            character.facing = "left"
+                            character.execute("fLight")
+                        else:
+                            character.execute("nLight")
+                    #Aerial Moves
+                    else:
+                        if "up" in self.inputs[character.player]:
+                            character.execute("uAir")
+                        elif "down" in self.inputs[character.player]:
+                            character.execute("dAir")
+                        elif character.facing in self.inputs[character.player]:
+                            character.input("fAir")
+                        elif "right" in self.inputs[character.player] or "left" in self.inputs[character.player]:
+                            character.execute("bAir")
+                        else:
+                            character.execute("nAir")
+
+            #Light Attack Section
 
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
