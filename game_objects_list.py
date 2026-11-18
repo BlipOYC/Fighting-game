@@ -16,7 +16,7 @@ def convert_to_attack(*params):
         for hitbox in params:
             try:
                 associated_hitboxes.append(Hitbox(*hitbox))
-            except ValueError, AttributeError, KeyError:
+            except ValueError, AttributeError, KeyError, TypeError:
                 pass
             except JSONDecodeError:
                 raise Exception("JSON format error: try rebooting the game or restoring the move list to its default state if modded")
@@ -24,41 +24,19 @@ def convert_to_attack(*params):
     except AttributeError:
         raise Exception("PARAMETERS MISSING")
 
+move_names = ["nLight", "fLight", "dLight", "grab", "throw", "nAir", "fAir", "uAir", "dAir"]
+
 moves = {
     "Rushdown": {
-        "nLight": move_list,
-        "fLight": move_list,
-        "dLight": move_list,
-        "grab": move_list,
-        "throw": move_list,
-        "nAir": move_list,
-        "fAir": move_list,
-        "uAir": move_list,
-        "dAir": move_list,
+        move_name: convert_to_attack(move_list[1][move_name]) for move_name in move_names
     },
     "Brawler": {
-        "nLight": convert_to_attack(move_list[0]["nLight"]),
-        "fLight": move_list,
-        "dLight": move_list,
-        "grab": move_list,
-        "throw": move_list,
-        "nAir": move_list,
-        "fAir": move_list,
-        "uAir": move_list,
-        "dAir": move_list,
+        move_name: convert_to_attack(move_list[0][move_name]) for move_name in move_names
     },
     "Zoner": {
-        "nLight": move_list,
-        "fLight": move_list,
-        "dLight": move_list,
-        "grab": move_list,
-        "throw": move_list,
-        "nAir": move_list,
-        "fAir": move_list,
-        "uAir": move_list,
-        "dAir": move_list,
+        move_name: convert_to_attack(move_list[2][move_name]) for move_name in move_names
     },
-} #Implement l8r
+}
 
 rushdown = Archetype("Rushdown", moves["Rushdown"], 40,3,  3)
 brawler = Archetype("Brawler", moves["Brawler"], 30, 3, 3)
@@ -67,6 +45,9 @@ zoner = Archetype("Zoner", moves["Zoner"], 25, 5, 5)
 chara1_sigs = {}
 chara2_sigs = {}
 chara3_sigs = {}
+chara4_sigs = {}
+chara5_sigs = {}
+chara6_sigs = {}
 
 character_list = {
     "chara1": Character(
@@ -75,6 +56,12 @@ character_list = {
         brawler, "2", (0, 0, 255), chara2_sigs, 570, 300, 25, 100, 0.5, 1, 3, 3, 10, 15, 2, 20, 12),
     "chara3":Character(
         zoner, "3", (0, 255, 0), chara3_sigs,  300, 300, 25, 100, 1, 2, 2, 2, 5, 15, 1, 10, 15),
+    "chara4":Character(
+        zoner, "4", (255, 255, 0), chara4_sigs,  300, 300, 25, 100, 0.5, 2, 2, 2, 5, 15, 1, 10, 15),
+    "chara5":Character(
+        rushdown, "5", (0, 255, 255), chara5_sigs,  300, 300, 25, 100, 2, 2, 3, 3, 10, 35, 1, 10, 15),
+    "chara6":Character(
+        rushdown, "6", (255, 0, 255), chara5_sigs,  300, 300, 25, 100, 2, 2, 3, 3, 10, 35, 1, 10, 15),
 }
 
 

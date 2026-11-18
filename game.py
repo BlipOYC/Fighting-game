@@ -1,7 +1,7 @@
 import pygame
 from random import choice
 
-from objects import Character
+from objects import Character, Attack
 
 
 def overlap(range1, range2):
@@ -22,16 +22,24 @@ def execute_move(character, inputs):
     #character_change = what happens to the character themselves after a move is inputted
     #including change in hurtboxes, animation
     #true_attack = actual Attack object of attack
-    #character.execute(character_change)
+    #self.active_attacks.append(character.execute(character_change))
 
 
 class Game:
-    def __init__(self, platforms, characters):
+    def __init__(self, platforms, characters, chosen_colours=None):
         self.platforms = platforms
         self.characters = characters
 
-        for character in self.characters:
+        self.active_hitboxes = []
+        self.active_attacks = []
+
+        for idx, character in enumerate(self.characters):
             #In here, also set player colours to be different two players play the same character
+            if chosen_colours is not None:
+                character.set_colour(chosen_colours[idx])
+            else:
+                pass
+
 
             character.reset_character_lives()
 
@@ -70,7 +78,12 @@ class Game:
         self.inputs = inputs
 
     def update_positions(self, inputs):
+        #TODO: We want to add an Attack/Hitbox loop before the characters' loop
+        #TODO: This will enable us to check for collisions and put players into hitstun
         self.take_inputs(inputs)
+        for attack in self.active_attacks:
+            attack.update()
+            attack.collide(self.character)
 
 
         p1, p2 = self.characters[0], self.characters[1]
@@ -113,37 +126,47 @@ class Game:
                     character.is_intangible = False
 
             #Add attack logic
-            #This must override both dashing and attacking
+            #This must override dashing, moving and attacking
+
+            #Light Attack Section
             if "attack" in self.inputs[character.player]:
                 if not character.is_respawning:
                     #Grounded moves
                     if character.grounded:
                         if "up" in self.inputs[character.player]:
-                            character.execute("uLight")
+                            self.active_attacks.append(character.execute("uLight"))
                         elif "down" in self.inputs[character.player]:
-                            character.execute("dLight")
+                            self.active_attacks.append(character.execute("dLight"))
                         elif "right" in self.inputs[character.player]:
                             character.facing = "right"
-                            character.execute("fLight")
+                            self.active_attacks.append(character.execute("fLight"))
                         elif "left" in self.inputs[character.player]:
                             character.facing = "left"
-                            character.execute("fLight")
+                            self.active_attacks.append(character.execute("fLight"))
                         else:
-                            character.execute("nLight")
+                            self.active_attacks.append(character.execute("nLight"))
                     #Aerial Moves
                     else:
                         if "up" in self.inputs[character.player]:
-                            character.execute("uAir")
+                            self.active_attacks.append(character.execute("uAir"))
                         elif "down" in self.inputs[character.player]:
-                            character.execute("dAir")
+                            self.active_attacks.append(character.execute("dAir"))
                         elif character.facing in self.inputs[character.player]:
-                            character.input("fAir")
+                            self.active_attacks.append(character.execute("fAir"))
                         elif "right" in self.inputs[character.player] or "left" in self.inputs[character.player]:
-                            character.execute("bAir")
+                            self.active_attacks.append(character.execute("bAir"))
                         else:
-                            character.execute("nAir")
+                            self.active_attacks.append(character.execute("nAir"))
 
-            #Light Attack Section
+            if "heavy" in self.inputs[character.player]:
+                if not character.is_respawning:
+                    # Grounded sigs
+                    if character.grounded:
+                        pass
+
+                    #Air sigs: Recovery/GP
+                    else:
+                        pass
 
             #Add dash logic
             #Implement timer for when you can dash again, and make it skip the movement/attacking parts of loop
@@ -206,6 +229,7 @@ class Game:
 
 
         self.inputs = []
+        self.active_hitboxes = []
         return None
 
     def pick_respawn_pos(self, character):

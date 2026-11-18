@@ -4,7 +4,7 @@ from game_objects_list import character_list, maps
 from menu_script import run_title_screen, run_menu, run_pause, run_end_fight
 from camera import Camera
 
-#Check out SPINE (engine)
+#INVESTIGATE WHY P2 CANNOT JUMP IF P1 IS MOVING AND JUMPING
 
 name_list = [character.name for character in character_list.values()]
 state = "menu"

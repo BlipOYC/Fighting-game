@@ -32,7 +32,7 @@ class Character:
         self.player = None #Temp
         self.archetype = archetype
         self.name = name
-        self.colour = colour
+        self._colour = colour
         self.moveset = self.archetype.moveset | heavies #Non-overlapping dictionaries
         self.x = x
         self.y = y
@@ -80,7 +80,10 @@ class Character:
         self.player = player
 
     def set_colour(self, colour):
-        self.colour = colour
+        self._colour = colour
+
+    def get_colour(self):
+        return self._colour
 
     def reset_character_lives(self):
         self.lives = 3
@@ -227,7 +230,10 @@ class Character:
         return None
 
     def execute(self, move_name):
-        print(self.moveset)
+        #TODO: We want the character to be able to create an Attack Object onto the game which can be interacted with
+        #TODO: This should also make the character inputs be disabled for the length of the attack so the character cannot move while attacking
+        #TODO: Should return the Attack object in question, so the Game Class can figure out which hitboxes are active
+        pass
 
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])
@@ -244,10 +250,12 @@ class Character:
         return self.lives > 0
 
 class Attack:
-    def __init__(self, associated_hitboxes):
+    def __init__(self, associated_hitboxes, owner=None):
+        #TODO: Kill the Attack if it is ownerless when it comes out
         self.associated_hitboxes = associated_hitboxes
         self.active_ticks = 0
         self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
+        self.owner = owner
 
     def update(self):
         self.active_ticks += 1
