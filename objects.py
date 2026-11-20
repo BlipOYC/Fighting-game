@@ -233,12 +233,15 @@ class Character:
         #TODO: We want the character to be able to create an Attack Object onto the game which can be interacted with
         #TODO: This should also make the character inputs be disabled for the length of the attack so the character cannot move while attacking
         #TODO: Should return the Attack object in question, so the Game Class can figure out which hitboxes are active
-        pass
+        attack_output = self.moveset[move_name]
+        attack_output.assign_owner(self)
+        return attack_output
 
     def create_hurtboxes(self):
         return pygame.Rect([self.x, self.y, self.width, self.height])
 
     def get_hit(self, hitbox): # Add SDI later
+        print(f"Player {self.name} got hit!")
         self.percent += hitbox.damage
         #Damage formulas to be WIP based on testing
         multiplier = 1 if hitbox.fixed_force else self.percent / 10
@@ -261,9 +264,9 @@ class Attack:
         self.active_ticks += 1
         self.current_hitboxes = [hitbox for hitbox in self.associated_hitboxes if self.active_ticks in hitbox.active_frames]
 
-    def collide(self, characters, owner):
+    def collide(self, characters):
         for character in characters:
-            if character == owner:
+            if character == self.owner:
                 continue
             if character.intangible:
                 continue
@@ -271,12 +274,15 @@ class Attack:
             else:
                 hitboxes = sorted(self.current_hitboxes, key=lambda hb: -hb.priority)
                 for hitbox in hitboxes:
+                    hitbox.make_rect(self.owner)
                     if hitbox.rect.colliderect(character.hurtboxes):
-                        character.get_hit(self)
+                        character.get_hit(hitbox)
                         return hitbox #So we can apply knockback of specific hitbox
                 return None
         return None
 
+    def assign_owner(self, owner):
+        self.owner = owner
 
 class Hitbox:
     def __init__(self, x, y, width, height, active_frames, damage, force, direction, facing, hitstun, priority=0, fixed_force=False):
@@ -292,6 +298,9 @@ class Hitbox:
         self.hitstun = hitstun
         self.priority = priority
         self.fixed_force = fixed_force
+        self.rect = None
 
     def make_rect(self, owner):
-        self.rect = pygame.Rect([self.x + owner.x, self.y + owner.y, self.width, self.height])
+        self.x += owner.x
+        self.y += owner.y
+        self.rect = pygame.Rect([self.x, self.y, self.width, self.height])

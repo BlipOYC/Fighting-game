@@ -30,7 +30,7 @@ class Camera:
     def update_mode(self, mode):
         self.mode = mode
 
-    def match_draw(self, characters, platforms, screen):
+    def match_draw(self, characters, platforms, attacks, screen):
         if self.zoom > self.target_zoom:
             self.zoom -= min(0.2, self.zoom - self.target_zoom)
         elif self.zoom < self.target_zoom:
@@ -40,15 +40,15 @@ class Camera:
             case "fixed":
                 self.centre_x = self.base_centre_x
                 self.centre_y = self.base_centre_y
-                self.draw_fixed(characters, platforms, screen)
+                self.draw_fixed(characters, platforms, attacks, screen)
             case "dynamic":
-                self.draw_dynamic(characters, platforms, screen)
+                self.draw_dynamic(characters, platforms, attacks, screen)
             case "center":
-                self.draw_centered(characters, platforms, screen)
+                self.draw_centered(characters, platforms, attacks, screen)
             case _:
                 self.draw_fixed(characters, platforms, screen)
 
-    def draw_fixed(self, characters, platforms, screen):
+    def draw_fixed(self, characters, platforms, attacks, screen):
         for character in characters:
             x, y = self.world_to_screen(
                 character.x, character.y, screen
@@ -61,10 +61,17 @@ class Camera:
             )
             draw_platform(platform, screen, x, y, self.zoom)
 
-    def draw_dynamic(self, characters, platforms, screen, target_x = None, target_y = None):
+        for attack in attacks:
+            for hitbox in attack.current_hitboxes:
+                x, y = self.world_to_screen(
+                    hitbox.x, hitbox.y, screen
+                )
+                draw_hitbox(hitbox, screen, x, y, self.zoom)
+
+    def draw_dynamic(self, characters, platforms, attacks, screen, target_x = None, target_y = None):
         #Leave for last
         if not characters:
-            self.draw_fixed(self, characters, platforms, screen)
+            self.draw_fixed(self, characters, platforms, attacks, screen)
             return
 
         #Calculate target for camera
@@ -81,9 +88,9 @@ class Camera:
 
         self.draw_fixed(characters, platforms, screen)
 
-    def draw_centered(self, characters, platforms, screen):
+    def draw_centered(self, characters, platforms, attacks, screen):
         if not characters:
-            self.draw_fixed(characters, platforms, screen)
+            self.draw_fixed(characters, platforms, attacks, screen)
             return
 
         self.centre_x = sum(character.x for character in characters)/len(characters)
@@ -101,8 +108,12 @@ def draw_player(player, screen, x, y, zoom):
 def draw_platform(platform_to_draw, screen, x, y, zoom):
     pygame.draw.rect(screen, (0,0, 0), [x, y, platform_to_draw.width * zoom, platform_to_draw.height * zoom])
 
+#TEMPORARY
+def draw_hitbox(hitbox, screen, x, y, zoom):
+    pygame.draw.rect(screen, (200,200,200), [x, y, hitbox.width * zoom, hitbox.height * zoom])
+
 """Uses both draw_platform and draw_player to create a screen"""
-def draw_game(players, platforms, screen):
+def draw_game(players, platforms, screen, attacks):
     #Fetch backgrounds
     screen.fill((255, 255, 255))
 
@@ -111,6 +122,10 @@ def draw_game(players, platforms, screen):
 
     for character in players:
         draw_player(character)
+
+    for attack in attacks:
+        for hitbox in attack.current_hitboxes:
+            draw_hitbox(hitbox)
 
     pygame.display.flip()
 

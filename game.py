@@ -83,7 +83,7 @@ class Game:
         self.take_inputs(inputs)
         for attack in self.active_attacks:
             attack.update()
-            attack.collide(self.character)
+            attack.collide(self.characters)
 
 
         p1, p2 = self.characters[0], self.characters[1]

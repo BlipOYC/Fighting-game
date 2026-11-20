@@ -155,7 +155,7 @@ while running:
 
             screen.fill((255, 255, 255))
             #Mention fix here by adding screen.fill early
-            game_camera.match_draw(players, platforms, screen)
+            game_camera.match_draw(players, platforms, game.active_attacks, screen)
 
         else:
 
